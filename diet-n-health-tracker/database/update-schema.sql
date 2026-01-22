@@ -1,12 +1,17 @@
--- Supabase PostgreSQL Schema for Diet-n-Health Tracker
--- Run this in your Supabase SQL Editor
+-- Quick Database Schema Update
+-- Run this in Supabase SQL Editor to fix the schema
 
--- Enable UUID extension
--- CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
--- Note: Using TEXT for IDs instead of UUID for better compatibility
+-- Step 1: Drop existing tables (WARNING: This will delete all data!)
+DROP TABLE IF EXISTS daily_checklists CASCADE;
+DROP TABLE IF EXISTS health_goals CASCADE;
+DROP TABLE IF EXISTS test_reports CASCADE;
+DROP TABLE IF EXISTS diet_entries CASCADE;
+DROP TABLE IF EXISTS user_profile CASCADE;
+
+-- Step 2: Create tables with correct schema
 
 -- User Profile Table
-CREATE TABLE IF NOT EXISTS user_profile (
+CREATE TABLE user_profile (
     id TEXT PRIMARY KEY,
     "userId" TEXT NOT NULL,
     name TEXT NOT NULL,
@@ -21,11 +26,8 @@ CREATE TABLE IF NOT EXISTS user_profile (
     UNIQUE("userId")
 );
 
--- Create index for faster queries
-CREATE INDEX IF NOT EXISTS idx_user_profile_userId ON user_profile("userId");
-
--- Diet Entries Table
-CREATE TABLE IF NOT EXISTS diet_entries (
+-- Diet Entries Table (FIXED: nutrition as JSONB)
+CREATE TABLE diet_entries (
     id TEXT PRIMARY KEY,
     "userId" TEXT NOT NULL,
     date DATE NOT NULL,
@@ -38,12 +40,8 @@ CREATE TABLE IF NOT EXISTS diet_entries (
     synced BOOLEAN DEFAULT FALSE
 );
 
--- Create indexes for faster queries
-CREATE INDEX IF NOT EXISTS idx_diet_entries_user_date ON diet_entries("userId", date);
-CREATE INDEX IF NOT EXISTS idx_diet_entries_date ON diet_entries(date);
-
--- Test Reports Table
-CREATE TABLE IF NOT EXISTS test_reports (
+-- Test Reports Table (FIXED: normalRange as JSONB)
+CREATE TABLE test_reports (
     id TEXT PRIMARY KEY,
     "userId" TEXT NOT NULL,
     "testId" TEXT NOT NULL,
@@ -59,12 +57,8 @@ CREATE TABLE IF NOT EXISTS test_reports (
     synced BOOLEAN DEFAULT FALSE
 );
 
--- Create indexes for faster queries
-CREATE INDEX IF NOT EXISTS idx_test_reports_user_date ON test_reports("userId", date);
-CREATE INDEX IF NOT EXISTS idx_test_reports_testId ON test_reports("testId");
-
 -- Health Goals Table
-CREATE TABLE IF NOT EXISTS health_goals (
+CREATE TABLE health_goals (
     id TEXT PRIMARY KEY,
     "userId" TEXT NOT NULL,
     title TEXT NOT NULL,
@@ -82,12 +76,8 @@ CREATE TABLE IF NOT EXISTS health_goals (
     synced BOOLEAN DEFAULT FALSE
 );
 
--- Create indexes for faster queries
-CREATE INDEX IF NOT EXISTS idx_health_goals_userId ON health_goals("userId");
-CREATE INDEX IF NOT EXISTS idx_health_goals_completed ON health_goals(completed);
-
 -- Daily Checklists Table
-CREATE TABLE IF NOT EXISTS daily_checklists (
+CREATE TABLE daily_checklists (
     id TEXT PRIMARY KEY,
     "userId" TEXT NOT NULL,
     date DATE NOT NULL,
@@ -98,40 +88,31 @@ CREATE TABLE IF NOT EXISTS daily_checklists (
     UNIQUE("userId", date)
 );
 
--- Create index for faster queries
-CREATE INDEX IF NOT EXISTS idx_daily_checklists_user_date ON daily_checklists("userId", date);
+-- Step 3: Create indexes
+CREATE INDEX idx_user_profile_userId ON user_profile("userId");
+CREATE INDEX idx_diet_entries_user_date ON diet_entries("userId", date);
+CREATE INDEX idx_diet_entries_date ON diet_entries(date);
+CREATE INDEX idx_test_reports_user_date ON test_reports("userId", date);
+CREATE INDEX idx_test_reports_testId ON test_reports("testId");
+CREATE INDEX idx_health_goals_userId ON health_goals("userId");
+CREATE INDEX idx_health_goals_completed ON health_goals(completed);
+CREATE INDEX idx_daily_checklists_user_date ON daily_checklists("userId", date);
 
--- Enable Row Level Security (RLS) for all tables
+-- Step 4: Enable Row Level Security
 ALTER TABLE user_profile ENABLE ROW LEVEL SECURITY;
 ALTER TABLE diet_entries ENABLE ROW LEVEL SECURITY;
 ALTER TABLE test_reports ENABLE ROW LEVEL SECURITY;
 ALTER TABLE health_goals ENABLE ROW LEVEL SECURITY;
 ALTER TABLE daily_checklists ENABLE ROW LEVEL SECURITY;
 
--- Create policies to allow all operations for now
--- You can make these more restrictive based on auth.uid() later
+-- Step 5: Create policies (allow all for now)
+CREATE POLICY "Allow all on user_profile" ON user_profile FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Allow all on diet_entries" ON diet_entries FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Allow all on test_reports" ON test_reports FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Allow all on health_goals" ON health_goals FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Allow all on daily_checklists" ON daily_checklists FOR ALL USING (true) WITH CHECK (true);
 
--- User Profile Policies
-CREATE POLICY "Allow all operations on user_profile" ON user_profile
-    FOR ALL USING (true) WITH CHECK (true);
-
--- Diet Entries Policies
-CREATE POLICY "Allow all operations on diet_entries" ON diet_entries
-    FOR ALL USING (true) WITH CHECK (true);
-
--- Test Reports Policies
-CREATE POLICY "Allow all operations on test_reports" ON test_reports
-    FOR ALL USING (true) WITH CHECK (true);
-
--- Health Goals Policies
-CREATE POLICY "Allow all operations on health_goals" ON health_goals
-    FOR ALL USING (true) WITH CHECK (true);
-
--- Daily Checklists Policies
-CREATE POLICY "Allow all operations on daily_checklists" ON daily_checklists
-    FOR ALL USING (true) WITH CHECK (true);
-
--- Grant permissions to authenticated and anon users
+-- Step 6: Grant permissions
 GRANT ALL ON user_profile TO authenticated, anon;
 GRANT ALL ON diet_entries TO authenticated, anon;
 GRANT ALL ON test_reports TO authenticated, anon;
@@ -141,7 +122,8 @@ GRANT ALL ON daily_checklists TO authenticated, anon;
 -- Success message
 DO $$
 BEGIN
-    RAISE NOTICE 'Database schema created successfully!';
-    RAISE NOTICE 'All tables created with proper indexes and RLS policies.';
-    RAISE NOTICE 'You can now use the Diet-n-Health Tracker app!';
+    RAISE NOTICE '✅ Database schema updated successfully!';
+    RAISE NOTICE '✅ All tables recreated with correct structure';
+    RAISE NOTICE '✅ nutrition column is now JSONB';
+    RAISE NOTICE '✅ You can now use the app without errors!';
 END $$;
