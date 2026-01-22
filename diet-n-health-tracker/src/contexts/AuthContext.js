@@ -17,16 +17,28 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     // Check for existing user session
-    const userEmail = localStorage.getItem('userEmail');
-    const userName = localStorage.getItem('userName');
-    const deviceId = getDeviceId();
+    try {
+      console.log('AuthContext: Initializing...');
+      const userEmail = localStorage.getItem('userEmail');
+      const userName = localStorage.getItem('userName');
+      const deviceId = getDeviceId();
 
-    if (userEmail) {
-      setUser({ email: userEmail, name: userName, deviceId });
-    } else {
+      if (userEmail) {
+        console.log('AuthContext: Found existing user');
+        setUser({ email: userEmail, name: userName, deviceId });
+      } else {
+        console.log('AuthContext: Setting guest user');
+        setUser({ deviceId, isGuest: true });
+      }
+    } catch (error) {
+      console.error('AuthContext: Error during initialization', error);
+      // Fallback to guest user
+      const deviceId = getDeviceId();
       setUser({ deviceId, isGuest: true });
+    } finally {
+      console.log('AuthContext: Initialization complete');
+      setLoading(false);
     }
-    setLoading(false);
   }, []);
 
   const loginWithGoogle = (credential) => {

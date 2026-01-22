@@ -16,23 +16,95 @@ function PrivateRoute({ children }) {
   const { user, loading } = useAuth();
 
   if (loading) {
-    return <div className="loading">Loading...</div>;
+    return (
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100vh',
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        color: 'white',
+        fontSize: '20px',
+        fontFamily: 'Arial, sans-serif'
+      }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ marginBottom: '20px', fontSize: '48px' }}>🍽️</div>
+          <div>Loading Diet-N-Health Tracker...</div>
+        </div>
+      </div>
+    );
   }
 
-  return user ? children : <Navigate to="/login" />;
+  // Always allow access - user is set to guest by default
+  return children;
+}
+
+function AppRoutes() {
+  const { loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100vh',
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        color: 'white',
+        fontSize: '20px',
+        fontFamily: 'Arial, sans-serif'
+      }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ marginBottom: '20px', fontSize: '48px' }}>🍽️</div>
+          <div>Loading...</div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <Routes>
+      <Route path="/login" element={<Login />} />
+      <Route
+        path="/dashboard"
+        element={
+          <PrivateRoute>
+            <Dashboard />
+          </PrivateRoute>
+        }
+      />
+      <Route path="/" element={<Navigate to="/login" replace />} />
+      <Route path="*" element={<Navigate to="/login" replace />} />
+    </Routes>
+  );
 }
 
 function App() {
+  const [appReady, setAppReady] = React.useState(false);
+
   React.useEffect(() => {
     const initializeApp = async () => {
       try {
+        console.log('Initializing app...');
+        
         // Initialize mobile notification service
-        await mobileNotificationService.initialize();
+        try {
+          await mobileNotificationService.initialize();
+          console.log('Notifications initialized');
+        } catch (error) {
+          console.log('Notification init error (non-critical):', error);
+        }
 
         // Configure native app features if on mobile
         if (Capacitor.isNativePlatform()) {
+          console.log('Running on native platform');
+          
           // Hide splash screen after app loads
-          await SplashScreen.hide();
+          try {
+            await SplashScreen.hide();
+          } catch (error) {
+            console.log('Splash screen error:', error);
+          }
 
           // Set status bar style
           try {
@@ -43,22 +115,34 @@ function App() {
           }
 
           // Handle back button on Android
-          CapacitorApp.addListener('backButton', ({ canGoBack }) => {
-            if (!canGoBack) {
-              CapacitorApp.exitApp();
-            } else {
-              window.history.back();
-            }
-          });
+          try {
+            CapacitorApp.addListener('backButton', ({ canGoBack }) => {
+              if (!canGoBack) {
+                CapacitorApp.exitApp();
+              } else {
+                window.history.back();
+              }
+            });
+          } catch (error) {
+            console.log('Back button handler error:', error);
+          }
 
           // Handle app state changes
-          CapacitorApp.addListener('appStateChange', ({ isActive }) => {
-            console.log('App state changed. Is active:', isActive);
-          });
+          try {
+            CapacitorApp.addListener('appStateChange', ({ isActive }) => {
+              console.log('App state changed. Is active:', isActive);
+            });
+          } catch (error) {
+            console.log('App state listener error:', error);
+          }
         }
+
+        console.log('App initialization complete');
+        setAppReady(true);
       } catch (error) {
         console.error('Error initializing app:', error);
-        // Don't crash the app, just log the error
+        // Still set app as ready to show error boundary
+        setAppReady(true);
       }
     };
 
@@ -67,28 +151,41 @@ function App() {
     return () => {
       // Cleanup listeners
       if (Capacitor.isNativePlatform()) {
-        CapacitorApp.removeAllListeners();
+        try {
+          CapacitorApp.removeAllListeners();
+        } catch (error) {
+          console.log('Cleanup error:', error);
+        }
       }
     };
   }, []);
+
+  if (!appReady) {
+    return (
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100vh',
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        color: 'white',
+        fontSize: '20px',
+        fontFamily: 'Arial, sans-serif'
+      }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ marginBottom: '20px', fontSize: '48px' }}>🍽️</div>
+          <div>Starting Diet-N-Health Tracker...</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <ErrorBoundary>
       <Router>
         <AuthProvider>
           <AppProvider>
-            <Routes>
-              <Route path="/login" element={<Login />} />
-              <Route
-                path="/dashboard"
-                element={
-                  <PrivateRoute>
-                    <Dashboard />
-                  </PrivateRoute>
-                }
-              />
-              <Route path="/" element={<Navigate to="/dashboard" />} />
-            </Routes>
+            <AppRoutes />
           </AppProvider>
         </AuthProvider>
       </Router>
