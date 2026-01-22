@@ -1,7 +1,30 @@
 {
   "name": "diet-n-health-tracker",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Diet-N-Health Tracker - Track your diet, monitor health tests, and achieve your wellness goals",
+  "author": "Diet-N-Health Team",
+  "license": "MIT",
+  "homepage": "https://your-domain.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/diet-n-health-tracker"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/diet-n-health-tracker/issues",
+    "email": "support@your-domain.com"
+  },
+  "keywords": [
+    "diet-tracker",
+    "health-tracker",
+    "nutrition",
+    "fitness",
+    "health-goals",
+    "meal-tracking",
+    "health-tests",
+    "android-app",
+    "react",
+    "capacitor"
+  ],
   "private": true,
   "dependencies": {
     "@capacitor/android": "^8.0.1",

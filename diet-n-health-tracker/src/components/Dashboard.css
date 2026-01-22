@@ -23,6 +23,19 @@
   font-size: 24px;
 }
 
+.version-badge {
+  display: inline-block;
+  margin-left: 12px;
+  padding: 4px 12px;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.95);
+  vertical-align: middle;
+}
+
 .user-info {
   display: flex;
   align-items: center;

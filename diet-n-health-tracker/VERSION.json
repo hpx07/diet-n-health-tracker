@@ -1,0 +1,185 @@
+{
+  "app": {
+    "name": "Diet-N-Health Tracker",
+    "version": "1.0.0",
+    "buildNumber": 1,
+    "releaseDate": "2026-01-22",
+    "versionName": "1.0.0 (Initial Release)"
+  },
+  "platform": {
+    "web": {
+      "version": "1.0.0",
+      "status": "production-ready",
+      "url": "https://your-domain.com"
+    },
+    "android": {
+      "version": "1.0.0",
+      "versionCode": 1,
+      "minSdkVersion": 22,
+      "targetSdkVersion": 33,
+      "packageName": "com.dietnhealth.tracker",
+      "status": "production-ready",
+      "apkSize": "7.26 MB"
+    },
+    "ios": {
+      "version": "1.0.0",
+      "status": "not-implemented",
+      "note": "iOS support can be added with Capacitor"
+    }
+  },
+  "features": {
+    "dietTracking": {
+      "version": "1.0.0",
+      "status": "stable",
+      "description": "Food search and nutrition tracking"
+    },
+    "healthTests": {
+      "version": "1.0.0",
+      "status": "stable",
+      "description": "24+ health test types with analysis"
+    },
+    "goals": {
+      "version": "1.0.0",
+      "status": "stable",
+      "description": "Health goal setting and tracking"
+    },
+    "reports": {
+      "version": "1.0.0",
+      "status": "stable",
+      "description": "Charts and analytics"
+    },
+    "notifications": {
+      "version": "1.0.0",
+      "status": "stable",
+      "description": "Smart reminders and alerts",
+      "types": [
+        "water-reminders",
+        "meal-reminders",
+        "goal-alerts",
+        "calorie-tracking",
+        "health-test-alerts"
+      ]
+    },
+    "offlineSupport": {
+      "version": "1.0.0",
+      "status": "stable",
+      "description": "Full offline functionality with sync"
+    },
+    "authentication": {
+      "version": "1.0.0",
+      "status": "stable",
+      "description": "Google OAuth and guest mode"
+    },
+    "userProfile": {
+      "version": "1.0.0",
+      "status": "stable",
+      "description": "BMI, BMR, TDEE calculations"
+    }
+  },
+  "dependencies": {
+    "react": "19.2.3",
+    "reactDom": "19.2.3",
+    "reactRouterDom": "7.12.0",
+    "capacitor": {
+      "core": "8.0.0",
+      "android": "8.0.0",
+      "app": "8.0.0",
+      "localNotifications": "8.0.0",
+      "pushNotifications": "8.0.0",
+      "splashScreen": "8.0.0",
+      "statusBar": "8.0.0"
+    },
+    "supabase": "2.91.0",
+    "recharts": "3.7.0",
+    "axios": "1.13.2",
+    "dateFns": "4.1.0",
+    "uuid": "13.0.0"
+  },
+  "changelog": [
+    {
+      "version": "1.0.0",
+      "date": "2026-01-22",
+      "type": "initial-release",
+      "changes": [
+        "Initial release of Diet-N-Health Tracker",
+        "Complete diet tracking with OpenFoodFacts API integration",
+        "Health test reports with 24+ test types",
+        "Goal setting and progress tracking",
+        "Daily checklist functionality",
+        "Reports and analytics with charts",
+        "User profile with BMI/BMR/TDEE calculations",
+        "Google OAuth authentication",
+        "Guest mode with device-based storage",
+        "Dual storage system (Supabase + LocalStorage)",
+        "Offline-first architecture with auto-sync",
+        "Android app with Capacitor",
+        "Smart notifications system",
+        "Water intake reminders (every 2 hours)",
+        "Meal reminders (customizable times)",
+        "Goal achievement alerts",
+        "Calorie tracking notifications",
+        "Health test alerts",
+        "Custom branding with logo",
+        "Green theme (#4CAF50)",
+        "Responsive mobile design",
+        "Production-ready build"
+      ]
+    }
+  ],
+  "roadmap": [
+    {
+      "version": "1.1.0",
+      "status": "planned",
+      "features": [
+        "Barcode scanner for food items",
+        "Meal planning and recipes",
+        "Exercise tracking",
+        "Water intake tracker widget",
+        "Sleep tracking",
+        "iOS app support"
+      ]
+    },
+    {
+      "version": "1.2.0",
+      "status": "planned",
+      "features": [
+        "Integration with fitness devices",
+        "Social features (share progress)",
+        "AI-powered meal suggestions",
+        "Export data to PDF",
+        "Multi-language support",
+        "Dark mode theme"
+      ]
+    },
+    {
+      "version": "2.0.0",
+      "status": "future",
+      "features": [
+        "Premium subscription features",
+        "Advanced analytics",
+        "Nutritionist consultation",
+        "Meal delivery integration",
+        "Community challenges",
+        "Gamification"
+      ]
+    }
+  ],
+  "build": {
+    "lastBuildDate": "2026-01-22T16:30:45+05:30",
+    "buildType": "debug",
+    "buildNumber": 1,
+    "gitCommit": "initial-release",
+    "buildEnvironment": "Windows",
+    "nodeVersion": "14+",
+    "npmVersion": "6+"
+  },
+  "metadata": {
+    "author": "Diet-N-Health Team",
+    "license": "MIT",
+    "repository": "https://github.com/hpx07/diet-n-health-tracker",
+    "homepage": "https://hpx07.netlify.app",
+    "supportEmail": "https://github.com/hpx07/",
+    "privacyPolicy": "https://github.com/hpx07/",
+    "termsOfService": "https://github.com/hpx07/"
+  }
+}

@@ -8,6 +8,8 @@ import DailyChecklist from './DailyChecklist';
 import UserProfile from './UserProfile';
 import Reports from './Reports';
 import NotificationSettings from './NotificationSettings';
+import About from './About';
+import { APP_VERSION } from '../version';
 import './Dashboard.css';
 
 const Dashboard = () => {
@@ -22,7 +24,8 @@ const Dashboard = () => {
     { id: 'checklist', label: 'Daily Checklist', icon: '✅' },
     { id: 'reports', label: 'Reports', icon: '📊' },
     { id: 'notifications', label: 'Notifications', icon: '�' },
-    { id: 'profile', label: 'Profile', icon: '👤' }
+    { id: 'profile', label: 'Profile', icon: '👤' },
+    { id: 'about', label: 'About', icon: 'ℹ️' }
   ];
 
   const renderContent = () => {
@@ -41,6 +44,8 @@ const Dashboard = () => {
         return <NotificationSettings />;
       case 'profile':
         return <UserProfile />;
+      case 'about':
+        return <About />;
       default:
         return <DietTracker />;
     }
@@ -50,7 +55,10 @@ const Dashboard = () => {
     <div className="dashboard">
       <header className="dashboard-header">
         <div className="header-content">
-          <h1>Diet-N-Health Tracker</h1>
+          <div>
+            <h1>Diet-N-Health Tracker</h1>
+            <span className="version-badge">{APP_VERSION.getVersionString()}</span>
+          </div>
           <div className="user-info">
             {isAuthenticated ? (
               <>
