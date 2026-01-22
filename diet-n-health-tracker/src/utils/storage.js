@@ -7,46 +7,60 @@ const LAST_SYNC_KEY = 'lastSync';
 export const storageService = {
   // Save data both locally and online
   async saveData(table, data) {
-    const userId = getUserIdentifier();
-    const timestamp = new Date().toISOString();
-    const dataWithMeta = { ...data, userId, timestamp, synced: false };
+    try {
+      const userId = getUserIdentifier();
+      const timestamp = new Date().toISOString();
+      const dataWithMeta = { ...data, userId, timestamp, synced: false };
 
-    // Always save locally first
-    this.saveToLocal(table, dataWithMeta);
+      // Always save locally first
+      this.saveToLocal(table, dataWithMeta);
 
-    // Try to save online if connected
-    if (navigator.onLine && isSupabaseConfigured()) {
-      try {
-        await this.saveToSupabase(table, { ...dataWithMeta, synced: true });
-        dataWithMeta.synced = true;
-        this.updateLocalSyncStatus(table, data.id, true);
-      } catch (error) {
-        console.error('Failed to sync online:', error);
+      // Try to save online if connected
+      if (navigator.onLine && isSupabaseConfigured()) {
+        try {
+          await this.saveToSupabase(table, { ...dataWithMeta, synced: true });
+          dataWithMeta.synced = true;
+          this.updateLocalSyncStatus(table, data.id, true);
+        } catch (error) {
+          console.log('Online sync failed (will retry later):', error.message);
+          this.addToSyncQueue(table, dataWithMeta);
+        }
+      } else {
         this.addToSyncQueue(table, dataWithMeta);
       }
-    } else {
-      this.addToSyncQueue(table, dataWithMeta);
-    }
 
-    return dataWithMeta;
+      return dataWithMeta;
+    } catch (error) {
+      console.error('Error saving data:', error);
+      throw error;
+    }
   },
 
   saveToLocal(table, data) {
-    const existingData = this.getFromLocal(table);
-    const index = existingData.findIndex(item => item.id === data.id);
-    
-    if (index !== -1) {
-      existingData[index] = data;
-    } else {
-      existingData.push(data);
+    try {
+      const existingData = this.getFromLocal(table);
+      const index = existingData.findIndex(item => item.id === data.id);
+      
+      if (index !== -1) {
+        existingData[index] = data;
+      } else {
+        existingData.push(data);
+      }
+      
+      localStorage.setItem(table, JSON.stringify(existingData));
+    } catch (error) {
+      console.error('Error saving to localStorage:', error);
     }
-    
-    localStorage.setItem(table, JSON.stringify(existingData));
   },
 
   getFromLocal(table) {
-    const data = localStorage.getItem(table);
-    return data ? JSON.parse(data) : [];
+    try {
+      const data = localStorage.getItem(table);
+      return data ? JSON.parse(data) : [];
+    } catch (error) {
+      console.error('Error reading from localStorage:', error);
+      return [];
+    }
   },
 
   async saveToSupabase(table, data) {
@@ -72,8 +86,12 @@ export const storageService = {
   },
 
   async syncData() {
-    if (!navigator.onLine || !isSupabaseConfigured()) return;
+    if (!navigator.onLine || !isSupabaseConfigured()) {
+      console.log('Sync skipped: offline or Supabase not configured');
+      return;
+    }
 
+    console.log('Starting data sync...');
     const syncQueue = this.getSyncQueue();
     const userId = getUserIdentifier();
 
@@ -105,6 +123,7 @@ export const storageService = {
     }
 
     localStorage.setItem(LAST_SYNC_KEY, new Date().toISOString());
+    console.log('Data sync completed');
   },
 
   mergeData(localData, onlineData) {
@@ -175,14 +194,16 @@ export const storageService = {
   }
 };
 
-// Auto-sync when online
+// Auto-sync when online (only if Supabase is configured)
 window.addEventListener('online', () => {
-  storageService.syncData();
+  if (isSupabaseConfigured()) {
+    storageService.syncData();
+  }
 });
 
-// Periodic sync every 5 minutes if online
+// Periodic sync every 5 minutes if online and Supabase configured
 setInterval(() => {
-  if (navigator.onLine) {
+  if (navigator.onLine && isSupabaseConfigured()) {
     storageService.syncData();
   }
 }, 5 * 60 * 1000);

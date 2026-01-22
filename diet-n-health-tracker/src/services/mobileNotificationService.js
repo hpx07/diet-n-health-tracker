@@ -1,5 +1,4 @@
 import { LocalNotifications } from '@capacitor/local-notifications';
-import { PushNotifications } from '@capacitor/push-notifications';
 import { Capacitor } from '@capacitor/core';
 
 class MobileNotificationService {
@@ -26,25 +25,17 @@ class MobileNotificationService {
       const localPermission = await LocalNotifications.requestPermissions();
       console.log('Local notification permission:', localPermission.display);
 
-      // Request permissions for push notifications
-      const pushPermission = await PushNotifications.requestPermissions();
-      console.log('Push notification permission:', pushPermission.receive);
-
-      if (pushPermission.receive === 'granted') {
-        await PushNotifications.register();
-      }
-
       // Listen for notification actions
       await LocalNotifications.addListener('localNotificationActionPerformed', (notification) => {
         console.log('Notification action performed:', notification);
       });
 
-      await PushNotifications.addListener('pushNotificationReceived', (notification) => {
-        console.log('Push notification received:', notification);
-      });
+      // Skip push notifications for now - they require Firebase setup
+      console.log('Push notifications skipped (requires Firebase configuration)');
 
     } catch (error) {
       console.error('Error initializing native notifications:', error);
+      // Don't throw - allow app to continue
     }
   }
 

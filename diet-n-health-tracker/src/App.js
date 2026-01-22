@@ -87,15 +87,7 @@ function App() {
       try {
         console.log('Initializing app...');
         
-        // Initialize mobile notification service
-        try {
-          await mobileNotificationService.initialize();
-          console.log('Notifications initialized');
-        } catch (error) {
-          console.log('Notification init error (non-critical):', error);
-        }
-
-        // Configure native app features if on mobile
+        // Configure native app features if on mobile FIRST
         if (Capacitor.isNativePlatform()) {
           console.log('Running on native platform');
           
@@ -135,6 +127,14 @@ function App() {
           } catch (error) {
             console.log('App state listener error:', error);
           }
+        }
+
+        // Initialize mobile notification service AFTER native setup
+        try {
+          await mobileNotificationService.initialize();
+          console.log('Notifications initialized');
+        } catch (error) {
+          console.log('Notification init error (non-critical):', error);
         }
 
         console.log('App initialization complete');
