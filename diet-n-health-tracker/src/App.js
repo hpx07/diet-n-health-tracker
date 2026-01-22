@@ -4,7 +4,11 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { AppProvider } from './contexts/AppContext';
 import Login from './components/Login';
 import Dashboard from './components/Dashboard';
-import { notificationService } from './services/notificationService';
+import { mobileNotificationService } from './services/mobileNotificationService';
+import { App as CapacitorApp } from '@capacitor/app';
+import { StatusBar, Style } from '@capacitor/status-bar';
+import { SplashScreen } from '@capacitor/splash-screen';
+import { Capacitor } from '@capacitor/core';
 import './App.css';
 
 function PrivateRoute({ children }) {
@@ -19,8 +23,47 @@ function PrivateRoute({ children }) {
 
 function App() {
   React.useEffect(() => {
-    // Request notification permission on app load
-    notificationService.requestPermission();
+    const initializeApp = async () => {
+      // Initialize mobile notification service
+      await mobileNotificationService.initialize();
+
+      // Configure native app features if on mobile
+      if (Capacitor.isNativePlatform()) {
+        // Hide splash screen after app loads
+        await SplashScreen.hide();
+
+        // Set status bar style
+        try {
+          await StatusBar.setStyle({ style: Style.Light });
+          await StatusBar.setBackgroundColor({ color: '#4CAF50' });
+        } catch (error) {
+          console.log('Status bar not available');
+        }
+
+        // Handle back button on Android
+        CapacitorApp.addListener('backButton', ({ canGoBack }) => {
+          if (!canGoBack) {
+            CapacitorApp.exitApp();
+          } else {
+            window.history.back();
+          }
+        });
+
+        // Handle app state changes
+        CapacitorApp.addListener('appStateChange', ({ isActive }) => {
+          console.log('App state changed. Is active:', isActive);
+        });
+      }
+    };
+
+    initializeApp();
+
+    return () => {
+      // Cleanup listeners
+      if (Capacitor.isNativePlatform()) {
+        CapacitorApp.removeAllListeners();
+      }
+    };
   }, []);
 
   return (

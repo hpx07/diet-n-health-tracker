@@ -4,6 +4,14 @@
   "description": "Diet-N-Health Tracker - Track your diet, monitor health tests, and achieve your wellness goals",
   "private": true,
   "dependencies": {
+    "@capacitor/android": "^8.0.1",
+    "@capacitor/app": "^8.0.0",
+    "@capacitor/cli": "^8.0.1",
+    "@capacitor/core": "^8.0.1",
+    "@capacitor/local-notifications": "^8.0.0",
+    "@capacitor/push-notifications": "^8.0.0",
+    "@capacitor/splash-screen": "^8.0.0",
+    "@capacitor/status-bar": "^8.0.0",
     "@react-oauth/google": "^0.13.4",
     "@supabase/supabase-js": "^2.91.0",
     "@testing-library/dom": "^10.4.1",
@@ -25,7 +33,12 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "test-supabase": "node test-supabase-connection.js"
+    "test-supabase": "node test-supabase-connection.js",
+    "android:sync": "npm run build && npx cap sync android",
+    "android:build": "npm run build && npx cap sync android && cd android && gradlew assembleDebug",
+    "android:release": "npm run build && npx cap sync android && cd android && gradlew assembleRelease",
+    "android:open": "npx cap open android",
+    "android:run": "npx cap run android"
   },
   "eslintConfig": {
     "extends": [

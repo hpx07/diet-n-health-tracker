@@ -7,6 +7,7 @@ import HealthGoals from './HealthGoals';
 import DailyChecklist from './DailyChecklist';
 import UserProfile from './UserProfile';
 import Reports from './Reports';
+import NotificationSettings from './NotificationSettings';
 import './Dashboard.css';
 
 const Dashboard = () => {
@@ -20,6 +21,7 @@ const Dashboard = () => {
     { id: 'goals', label: 'Health Goals', icon: '🎯' },
     { id: 'checklist', label: 'Daily Checklist', icon: '✅' },
     { id: 'reports', label: 'Reports', icon: '📊' },
+    { id: 'notifications', label: 'Notifications', icon: '�' },
     { id: 'profile', label: 'Profile', icon: '👤' }
   ];
 
@@ -35,6 +37,8 @@ const Dashboard = () => {
         return <DailyChecklist />;
       case 'reports':
         return <Reports />;
+      case 'notifications':
+        return <NotificationSettings />;
       case 'profile':
         return <UserProfile />;
       default:
