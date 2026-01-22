@@ -1,6 +1,7 @@
 {
   "name": "diet-n-health-tracker",
   "version": "0.1.0",
+  "description": "Diet-N-Health Tracker - Track your diet, monitor health tests, and achieve your wellness goals",
   "private": true,
   "dependencies": {
     "@react-oauth/google": "^0.13.4",

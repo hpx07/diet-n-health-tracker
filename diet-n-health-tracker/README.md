@@ -1,4 +1,4 @@
-# Diet-n-Health Tracker
+# Diet-N-Health Tracker
 
 A comprehensive, production-ready health and diet tracking application built with React. Track your daily diet, monitor health test results, set goals, and get personalized nutrition recommendations.
 

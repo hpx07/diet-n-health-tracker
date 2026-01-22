@@ -46,7 +46,7 @@ const Dashboard = () => {
     <div className="dashboard">
       <header className="dashboard-header">
         <div className="header-content">
-          <h1>Diet-n-Health Tracker</h1>
+          <h1>Diet-N-Health Tracker</h1>
           <div className="user-info">
             {isAuthenticated ? (
               <>

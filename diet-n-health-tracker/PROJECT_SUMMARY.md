@@ -93,7 +93,7 @@ diet-n-health-tracker/
 ### Tools
 - **UUID**: Unique ID generation
 - **Axios**: HTTP client
-- **Create React App**: Build tooling
+- **React Scripts**: Build tooling
 
 ## Core Features
 

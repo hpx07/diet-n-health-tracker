@@ -25,7 +25,7 @@ const Login = () => {
   return (
     <div className="login-container">
       <div className="login-card">
-        <h1>Diet-n-Health Tracker</h1>
+        <h1>Diet-N-Health Tracker</h1>
         <p className="subtitle">Track your diet, monitor your health, achieve your goals</p>
         
         <div className="login-options">

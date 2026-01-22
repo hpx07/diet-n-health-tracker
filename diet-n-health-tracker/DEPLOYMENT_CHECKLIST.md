@@ -245,7 +245,7 @@ npm audit fix
 - [Vercel Documentation](https://vercel.com/docs)
 - [Netlify Documentation](https://docs.netlify.com)
 - [Supabase Documentation](https://supabase.com/docs)
-- [React Deployment](https://create-react-app.dev/docs/deployment)
+- [React Deployment Guide](https://reactjs.org/docs/deployment.html)
 
 ---
 
