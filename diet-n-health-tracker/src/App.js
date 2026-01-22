@@ -4,6 +4,7 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { AppProvider } from './contexts/AppContext';
 import Login from './components/Login';
 import Dashboard from './components/Dashboard';
+import ErrorBoundary from './components/ErrorBoundary';
 import { mobileNotificationService } from './services/mobileNotificationService';
 import { App as CapacitorApp } from '@capacitor/app';
 import { StatusBar, Style } from '@capacitor/status-bar';
@@ -24,35 +25,40 @@ function PrivateRoute({ children }) {
 function App() {
   React.useEffect(() => {
     const initializeApp = async () => {
-      // Initialize mobile notification service
-      await mobileNotificationService.initialize();
+      try {
+        // Initialize mobile notification service
+        await mobileNotificationService.initialize();
 
-      // Configure native app features if on mobile
-      if (Capacitor.isNativePlatform()) {
-        // Hide splash screen after app loads
-        await SplashScreen.hide();
+        // Configure native app features if on mobile
+        if (Capacitor.isNativePlatform()) {
+          // Hide splash screen after app loads
+          await SplashScreen.hide();
 
-        // Set status bar style
-        try {
-          await StatusBar.setStyle({ style: Style.Light });
-          await StatusBar.setBackgroundColor({ color: '#4CAF50' });
-        } catch (error) {
-          console.log('Status bar not available');
-        }
-
-        // Handle back button on Android
-        CapacitorApp.addListener('backButton', ({ canGoBack }) => {
-          if (!canGoBack) {
-            CapacitorApp.exitApp();
-          } else {
-            window.history.back();
+          // Set status bar style
+          try {
+            await StatusBar.setStyle({ style: Style.Light });
+            await StatusBar.setBackgroundColor({ color: '#4CAF50' });
+          } catch (error) {
+            console.log('Status bar not available');
           }
-        });
 
-        // Handle app state changes
-        CapacitorApp.addListener('appStateChange', ({ isActive }) => {
-          console.log('App state changed. Is active:', isActive);
-        });
+          // Handle back button on Android
+          CapacitorApp.addListener('backButton', ({ canGoBack }) => {
+            if (!canGoBack) {
+              CapacitorApp.exitApp();
+            } else {
+              window.history.back();
+            }
+          });
+
+          // Handle app state changes
+          CapacitorApp.addListener('appStateChange', ({ isActive }) => {
+            console.log('App state changed. Is active:', isActive);
+          });
+        }
+      } catch (error) {
+        console.error('Error initializing app:', error);
+        // Don't crash the app, just log the error
       }
     };
 
@@ -67,24 +73,26 @@ function App() {
   }, []);
 
   return (
-    <Router>
-      <AuthProvider>
-        <AppProvider>
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route
-              path="/dashboard"
-              element={
-                <PrivateRoute>
-                  <Dashboard />
-                </PrivateRoute>
-              }
-            />
-            <Route path="/" element={<Navigate to="/dashboard" />} />
-          </Routes>
-        </AppProvider>
-      </AuthProvider>
-    </Router>
+    <ErrorBoundary>
+      <Router>
+        <AuthProvider>
+          <AppProvider>
+            <Routes>
+              <Route path="/login" element={<Login />} />
+              <Route
+                path="/dashboard"
+                element={
+                  <PrivateRoute>
+                    <Dashboard />
+                  </PrivateRoute>
+                }
+              />
+              <Route path="/" element={<Navigate to="/dashboard" />} />
+            </Routes>
+          </AppProvider>
+        </AuthProvider>
+      </Router>
+    </ErrorBoundary>
   );
 }
 
