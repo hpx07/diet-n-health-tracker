@@ -1,0 +1,175 @@
+.user-profile h2 {
+  margin-bottom: 30px;
+  color: #333;
+}
+
+.profile-form {
+  margin-bottom: 40px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin-bottom: 25px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #555;
+  font-size: 14px;
+}
+
+.form-group input,
+.form-group select {
+  padding: 12px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 15px;
+  transition: border-color 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.save-btn {
+  padding: 12px 32px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.save-btn:hover {
+  transform: translateY(-2px);
+}
+
+.diet-plan {
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 30px;
+  margin-top: 30px;
+}
+
+.diet-plan h3 {
+  margin-bottom: 25px;
+  color: #333;
+}
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.metric-card {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.metric-label {
+  font-size: 13px;
+  color: #888;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.metric-value {
+  font-size: 32px;
+  font-weight: bold;
+  color: #667eea;
+  margin-bottom: 5px;
+}
+
+.metric-status,
+.metric-unit {
+  font-size: 14px;
+  color: #666;
+}
+
+.macros-section {
+  margin-bottom: 30px;
+}
+
+.macros-section h4 {
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.macros-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+}
+
+.macro-item {
+  background: white;
+  padding: 15px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.macro-label {
+  font-weight: 600;
+  color: #555;
+}
+
+.macro-value {
+  font-size: 20px;
+  font-weight: bold;
+  color: #667eea;
+}
+
+.recommendations {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.recommendations h4 {
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.recommendations ul {
+  list-style: none;
+  padding: 0;
+}
+
+.recommendations li {
+  padding: 10px 0;
+  border-bottom: 1px solid #f0f0f0;
+  color: #555;
+  line-height: 1.6;
+}
+
+.recommendations li:last-child {
+  border-bottom: none;
+}
+
+.recommendations li::before {
+  content: '✓ ';
+  color: #4caf50;
+  font-weight: bold;
+  margin-right: 8px;
+}

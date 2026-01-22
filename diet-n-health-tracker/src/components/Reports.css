@@ -1,0 +1,117 @@
+.reports {
+  max-width: 1200px;
+}
+
+.reports-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.reports-header h2 {
+  margin: 0;
+  color: #333;
+}
+
+.download-btn {
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.download-btn:hover {
+  transform: translateY(-2px);
+}
+
+.report-controls {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 30px;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 10px;
+}
+
+.control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.control-group label {
+  font-weight: 600;
+  color: #555;
+  font-size: 14px;
+}
+
+.control-group select {
+  padding: 10px 15px;
+  border: 2px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 15px;
+  background: white;
+  cursor: pointer;
+}
+
+.report-section {
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  margin-bottom: 30px;
+}
+
+.report-section h3 {
+  margin-top: 30px;
+  margin-bottom: 20px;
+  color: #333;
+  font-size: 20px;
+}
+
+.report-section h3:first-child {
+  margin-top: 0;
+}
+
+.no-data {
+  text-align: center;
+  color: #888;
+  padding: 60px 20px;
+  font-size: 16px;
+}
+
+.test-chart {
+  margin-bottom: 40px;
+  padding-bottom: 30px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.test-chart:last-child {
+  border-bottom: none;
+}
+
+.test-chart h3 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #667eea;
+}
+
+@media (max-width: 768px) {
+  .reports-header {
+    flex-direction: column;
+    gap: 15px;
+    align-items: stretch;
+  }
+
+  .report-controls {
+    flex-direction: column;
+  }
+
+  .download-btn {
+    width: 100%;
+  }
+}
