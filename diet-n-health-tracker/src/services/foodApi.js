@@ -78,7 +78,126 @@ const indianFoodDatabase = [
   { id: 'coffee-milk-sugar', name: 'Coffee (with Milk & Sugar)', category: 'Beverages', calories: 35, protein: 1.0, carbs: 6.0, fat: 0.8, fiber: 0, sugar: 5.5, sodium: 0.01 },
   { id: 'lassi-sweet', name: 'Lassi (Sweet)', category: 'Beverages', calories: 110, protein: 3.0, carbs: 18.0, fat: 2.5, fiber: 0, sugar: 16.0, sodium: 0.05 },
   { id: 'lassi-plain', name: 'Lassi (Plain)', category: 'Beverages', calories: 60, protein: 3.5, carbs: 5.0, fat: 3.0, fiber: 0, sugar: 5.0, sodium: 0.05 },
-  { id: 'coconut-water', name: 'Coconut Water (Nariyal Pani)', category: 'Beverages', calories: 19, protein: 0.7, carbs: 3.7, fat: 0.2, fiber: 1.1, sugar: 2.6, sodium: 0.105 }
+  { id: 'coconut-water', name: 'Coconut Water (Nariyal Pani)', category: 'Beverages', calories: 19, protein: 0.7, carbs: 3.7, fat: 0.2, fiber: 1.1, sugar: 2.6, sodium: 0.105 },
+
+  // Punjabi Main Dishes
+{ id: 'sarson-ka-saag', name: 'Sarson Ka Saag', category: 'Vegetables', calories: 180, protein: 6.0, carbs: 12.0, fat: 12.0, fiber: 5.0, sugar: 2.0, sodium: 0.45 },
+{ id: 'makki-di-roti', name: 'Makki Di Roti', category: 'Grains', calories: 330, protein: 7.0, carbs: 54.0, fat: 9.0, fiber: 6.0, sugar: 1.0, sodium: 0.4 },
+{ id: 'dal-makhani', name: 'Dal Makhani', category: 'Pulses', calories: 220, protein: 9.0, carbs: 20.0, fat: 12.0, fiber: 6.0, sugar: 2.0, sodium: 0.6 },
+{ id: 'rajma-masala', name: 'Rajma Masala', category: 'Pulses', calories: 190, protein: 9.5, carbs: 24.0, fat: 7.0, fiber: 7.0, sugar: 2.5, sodium: 0.5 },
+{ id: 'kadhi-pakora', name: 'Punjabi Kadhi Pakora', category: 'Pulses', calories: 200, protein: 7.0, carbs: 18.0, fat: 11.0, fiber: 3.0, sugar: 3.0, sodium: 0.6 },
+
+// Punjabi Non-Vegetarian
+{ id: 'butter-chicken', name: 'Butter Chicken', category: 'Meat', calories: 240, protein: 18.0, carbs: 6.0, fat: 17.0, fiber: 1.0, sugar: 3.0, sodium: 0.7 },
+{ id: 'chicken-tikka', name: 'Chicken Tikka', category: 'Meat', calories: 195, protein: 27.0, carbs: 2.0, fat: 8.0, fiber: 0, sugar: 1.0, sodium: 0.6 },
+{ id: 'tandoori-chicken', name: 'Tandoori Chicken', category: 'Meat', calories: 180, protein: 28.0, carbs: 1.0, fat: 7.0, fiber: 0, sugar: 0.5, sodium: 0.65 },
+{ id: 'mutton-keema', name: 'Mutton Keema', category: 'Meat', calories: 290, protein: 22.0, carbs: 4.0, fat: 22.0, fiber: 1.0, sugar: 1.5, sodium: 0.6 },
+
+// Punjabi Breads
+{ id: 'butter-naan', name: 'Butter Naan', category: 'Grains', calories: 320, protein: 8.0, carbs: 45.0, fat: 11.0, fiber: 2.0, sugar: 3.0, sodium: 0.6 },
+{ id: 'tandoori-roti', name: 'Tandoori Roti', category: 'Grains', calories: 260, protein: 9.0, carbs: 48.0, fat: 4.0, fiber: 5.0, sugar: 1.0, sodium: 0.4 },
+{ id: 'missi-roti', name: 'Missi Roti', category: 'Grains', calories: 300, protein: 10.0, carbs: 46.0, fat: 9.0, fiber: 6.0, sugar: 1.2, sodium: 0.45 },
+
+// Punjabi Dairy & Sides
+{ id: 'butter-white', name: 'White Butter (Makhan)', category: 'Dairy', calories: 720, protein: 0.5, carbs: 0.1, fat: 81.0, fiber: 0, sugar: 0.1, sodium: 0.6 },
+{ id: 'paneer-bhurji', name: 'Paneer Bhurji', category: 'Dairy', calories: 260, protein: 14.0, carbs: 8.0, fat: 18.0, fiber: 2.0, sugar: 3.0, sodium: 0.5 },
+
+// Punjabi Snacks & Street Food
+{ id: 'amritsari-kulcha', name: 'Amritsari Kulcha', category: 'Snacks', calories: 340, protein: 9.0, carbs: 50.0, fat: 12.0, fiber: 3.0, sugar: 2.0, sodium: 0.6 },
+{ id: 'chole-kulche', name: 'Chole Kulche', category: 'Snacks', calories: 280, protein: 10.0, carbs: 40.0, fat: 9.0, fiber: 6.0, sugar: 3.0, sodium: 0.55 },
+{ id: 'paneer-pakora', name: 'Paneer Pakora', category: 'Snacks', calories: 310, protein: 10.0, carbs: 22.0, fat: 20.0, fiber: 2.5, sugar: 2.0, sodium: 0.5 },
+
+// Punjabi Sweets
+{ id: 'kheer', name: 'Rice Kheer', category: 'Sweets', calories: 160, protein: 4.0, carbs: 22.0, fat: 6.0, fiber: 0.5, sugar: 15.0, sodium: 0.1 },
+{ id: 'pinni', name: 'Pinni', category: 'Sweets', calories: 480, protein: 9.0, carbs: 40.0, fat: 32.0, fiber: 3.0, sugar: 25.0, sodium: 0.1 },
+{ id: 'atta-halwa', name: 'Atta Halwa', category: 'Sweets', calories: 390, protein: 6.0, carbs: 48.0, fat: 18.0, fiber: 2.0, sugar: 28.0, sodium: 0.12 },
+
+// Punjabi Beverages
+{ id: 'lassi-salted', name: 'Lassi (Salted)', category: 'Beverages', calories: 65, protein: 3.5, carbs: 4.5, fat: 3.0, fiber: 0, sugar: 4.0, sodium: 0.25 },
+{ id: 'chaas', name: 'Chaas (Buttermilk)', category: 'Beverages', calories: 40, protein: 2.0, carbs: 3.0, fat: 1.5, fiber: 0, sugar: 3.0, sodium: 0.15 },
+
+// =======================
+// GYM & FITNESS FOODS
+// =======================
+
+// High-Protein Vegetarian
+{ id: 'tofu', name: 'Tofu', category: 'Protein', calories: 76, protein: 8.0, carbs: 1.9, fat: 4.8, fiber: 0.3, sugar: 0.3, sodium: 0.007 },
+{ id: 'soy-chunks', name: 'Soy Chunks', category: 'Protein', calories: 345, protein: 52.0, carbs: 33.0, fat: 0.5, fiber: 13.0, sugar: 7.0, sodium: 0.02 },
+{ id: 'boiled-chickpeas', name: 'Boiled Chickpeas', category: 'Protein', calories: 164, protein: 8.9, carbs: 27.4, fat: 2.6, fiber: 7.6, sugar: 4.8, sodium: 0.01 },
+{ id: 'sprouts-mixed', name: 'Mixed Sprouts', category: 'Protein', calories: 105, protein: 7.5, carbs: 18.0, fat: 0.8, fiber: 4.0, sugar: 2.0, sodium: 0.01 },
+{ id: 'low-fat-paneer', name: 'Low Fat Paneer', category: 'Protein', calories: 145, protein: 20.0, carbs: 3.0, fat: 6.0, fiber: 0, sugar: 1.5, sodium: 0.15 },
+
+// High-Protein Non-Veg
+{ id: 'egg-whites', name: 'Egg Whites', category: 'Protein', calories: 52, protein: 11.0, carbs: 0.7, fat: 0.2, fiber: 0, sugar: 0.7, sodium: 0.166 },
+{ id: 'chicken-boiled', name: 'Chicken (Boiled)', category: 'Protein', calories: 165, protein: 31.0, carbs: 0, fat: 3.6, fiber: 0, sugar: 0, sodium: 0.074 },
+{ id: 'chicken-grilled', name: 'Chicken (Grilled)', category: 'Protein', calories: 170, protein: 30.0, carbs: 0, fat: 4.0, fiber: 0, sugar: 0, sodium: 0.08 },
+{ id: 'fish-grilled', name: 'Grilled Fish', category: 'Protein', calories: 140, protein: 22.0, carbs: 0, fat: 5.0, fiber: 0, sugar: 0, sodium: 0.06 },
+{ id: 'tuna', name: 'Tuna (Canned in Water)', category: 'Protein', calories: 116, protein: 26.0, carbs: 0, fat: 1.0, fiber: 0, sugar: 0, sodium: 0.3 },
+
+// Complex Carbohydrates
+{ id: 'oats', name: 'Oats', category: 'Grains', calories: 389, protein: 16.9, carbs: 66.3, fat: 6.9, fiber: 10.6, sugar: 0.9, sodium: 0.002 },
+{ id: 'sweet-potato', name: 'Sweet Potato (Boiled)', category: 'Grains', calories: 90, protein: 2.0, carbs: 21.0, fat: 0.1, fiber: 3.3, sugar: 6.5, sodium: 0.036 },
+{ id: 'quinoa', name: 'Quinoa (Cooked)', category: 'Grains', calories: 120, protein: 4.4, carbs: 21.3, fat: 1.9, fiber: 2.8, sugar: 0.9, sodium: 0.007 },
+{ id: 'brown-bread', name: 'Brown Bread', category: 'Grains', calories: 247, protein: 13.0, carbs: 41.0, fat: 4.2, fiber: 7.0, sugar: 6.0, sodium: 0.49 },
+{ id: 'millet-roti', name: 'Millet Roti (Bajra/Jowar)', category: 'Grains', calories: 290, protein: 8.0, carbs: 55.0, fat: 5.0, fiber: 8.0, sugar: 1.5, sodium: 0.01 },
+
+// Healthy Fats
+{ id: 'almonds', name: 'Almonds', category: 'Healthy Fats', calories: 579, protein: 21.0, carbs: 22.0, fat: 50.0, fiber: 12.5, sugar: 4.4, sodium: 0.001 },
+{ id: 'walnuts', name: 'Walnuts', category: 'Healthy Fats', calories: 654, protein: 15.0, carbs: 14.0, fat: 65.0, fiber: 6.7, sugar: 2.6, sodium: 0.002 },
+{ id: 'peanut-butter', name: 'Peanut Butter (Natural)', category: 'Healthy Fats', calories: 588, protein: 25.0, carbs: 20.0, fat: 50.0, fiber: 6.0, sugar: 9.0, sodium: 0.4 },
+{ id: 'flax-seeds', name: 'Flax Seeds', category: 'Healthy Fats', calories: 534, protein: 18.0, carbs: 29.0, fat: 42.0, fiber: 27.0, sugar: 1.5, sodium: 0.03 },
+{ id: 'chia-seeds', name: 'Chia Seeds', category: 'Healthy Fats', calories: 486, protein: 17.0, carbs: 42.0, fat: 31.0, fiber: 34.0, sugar: 0, sodium: 0.016 },
+
+// Gym-Friendly Vegetables
+{ id: 'broccoli', name: 'Broccoli', category: 'Vegetables', calories: 34, protein: 2.8, carbs: 6.6, fat: 0.4, fiber: 2.6, sugar: 1.7, sodium: 0.033 },
+{ id: 'bell-pepper', name: 'Bell Pepper', category: 'Vegetables', calories: 31, protein: 1.0, carbs: 6.0, fat: 0.3, fiber: 2.1, sugar: 4.2, sodium: 0.004 },
+{ id: 'zucchini', name: 'Zucchini', category: 'Vegetables', calories: 17, protein: 1.2, carbs: 3.1, fat: 0.3, fiber: 1.0, sugar: 2.5, sodium: 0.008 },
+
+// Pre / Post Workout
+{ id: 'banana-peanut-butter', name: 'Banana with Peanut Butter', category: 'Snacks', calories: 210, protein: 6.0, carbs: 27.0, fat: 9.0, fiber: 3.0, sugar: 14.0, sodium: 0.12 },
+{ id: 'protein-smoothie', name: 'Protein Smoothie (Milk + Banana)', category: 'Beverages', calories: 180, protein: 12.0, carbs: 22.0, fat: 4.0, fiber: 2.5, sugar: 16.0, sodium: 0.15 },
+{ id: 'boiled-eggs-snack', name: 'Boiled Eggs (2)', category: 'Snacks', calories: 155, protein: 13.0, carbs: 1.1, fat: 11.0, fiber: 0, sugar: 1.1, sodium: 0.124 },
+// =======================
+// DAILY ROUTINE FOODS
+// =======================
+
+// Breakfast & Light Meals
+{ id: 'vegetable-oats', name: 'Vegetable Oats', category: 'Grains', calories: 180, protein: 6.0, carbs: 30.0, fat: 4.0, fiber: 4.0, sugar: 2.0, sodium: 0.3 },
+{ id: 'vegetable-omelette', name: 'Vegetable Omelette', category: 'Eggs', calories: 170, protein: 12.0, carbs: 4.0, fat: 12.0, fiber: 1.0, sugar: 2.0, sodium: 0.35 },
+{ id: 'besan-chilla', name: 'Besan Chilla', category: 'Snacks', calories: 220, protein: 9.0, carbs: 22.0, fat: 10.0, fiber: 4.0, sugar: 2.0, sodium: 0.4 },
+{ id: 'vegetable-sandwich', name: 'Vegetable Sandwich (Brown Bread)', category: 'Snacks', calories: 210, protein: 7.0, carbs: 34.0, fat: 6.0, fiber: 5.0, sugar: 4.0, sodium: 0.45 },
+{ id: 'curd-fruit-bowl', name: 'Curd with Fruits', category: 'Dairy', calories: 120, protein: 4.0, carbs: 16.0, fat: 3.0, fiber: 2.0, sugar: 12.0, sodium: 0.05 },
+
+// Daily Lunch Items
+{ id: 'plain-rice', name: 'Plain Rice', category: 'Grains', calories: 130, protein: 2.5, carbs: 28.0, fat: 0.3, fiber: 0.4, sugar: 0.1, sodium: 0.001 },
+{ id: 'vegetable-pulao', name: 'Vegetable Pulao', category: 'Grains', calories: 180, protein: 4.0, carbs: 32.0, fat: 4.5, fiber: 3.0, sugar: 2.0, sodium: 0.4 },
+{ id: 'curd-rice', name: 'Curd Rice', category: 'Grains', calories: 150, protein: 4.0, carbs: 22.0, fat: 4.0, fiber: 1.0, sugar: 3.0, sodium: 0.35 },
+{ id: 'veg-khichdi', name: 'Vegetable Khichdi', category: 'Grains', calories: 160, protein: 6.0, carbs: 26.0, fat: 3.5, fiber: 4.0, sugar: 1.5, sodium: 0.3 },
+{ id: 'plain-dal', name: 'Plain Dal', category: 'Pulses', calories: 120, protein: 7.0, carbs: 20.0, fat: 2.0, fiber: 5.0, sugar: 1.5, sodium: 0.3 },
+
+// Sabzi / Vegetables (Daily Home Style)
+{ id: 'lauki-sabzi', name: 'Lauki Sabzi', category: 'Vegetables', calories: 60, protein: 1.5, carbs: 7.0, fat: 2.5, fiber: 2.0, sugar: 3.0, sodium: 0.25 },
+{ id: 'tori-sabzi', name: 'Tori Sabzi', category: 'Vegetables', calories: 70, protein: 1.8, carbs: 8.0, fat: 3.0, fiber: 2.2, sugar: 3.5, sodium: 0.25 },
+{ id: 'cabbage-sabzi', name: 'Cabbage Sabzi', category: 'Vegetables', calories: 90, protein: 2.0, carbs: 10.0, fat: 4.0, fiber: 3.0, sugar: 3.0, sodium: 0.3 },
+{ id: 'beans-sabzi', name: 'Green Beans Sabzi', category: 'Vegetables', calories: 80, protein: 2.5, carbs: 10.0, fat: 3.0, fiber: 3.5, sugar: 2.5, sodium: 0.25 },
+
+// Evening Snacks (Office / Home)
+{ id: 'roasted-makhana', name: 'Roasted Makhana', category: 'Snacks', calories: 110, protein: 4.0, carbs: 17.0, fat: 3.0, fiber: 3.0, sugar: 0.5, sodium: 0.2 },
+{ id: 'roasted-peanuts', name: 'Roasted Peanuts', category: 'Snacks', calories: 170, protein: 7.0, carbs: 6.0, fat: 14.0, fiber: 2.5, sugar: 1.0, sodium: 0.2 },
+{ id: 'corn-chat', name: 'Boiled Corn Chaat', category: 'Snacks', calories: 140, protein: 4.0, carbs: 26.0, fat: 2.5, fiber: 3.5, sugar: 3.0, sodium: 0.35 },
+{ id: 'fruit-salad', name: 'Mixed Fruit Salad', category: 'Fruits', calories: 95, protein: 1.5, carbs: 22.0, fat: 0.5, fiber: 3.0, sugar: 16.0, sodium: 0.01 },
+
+// Dinner Items
+{ id: 'veg-curry', name: 'Mixed Vegetable Curry', category: 'Vegetables', calories: 140, protein: 4.0, carbs: 14.0, fat: 7.0, fiber: 4.0, sugar: 4.0, sodium: 0.4 },
+{ id: 'egg-curry', name: 'Egg Curry', category: 'Eggs', calories: 190, protein: 13.0, carbs: 6.0, fat: 13.0, fiber: 1.0, sugar: 3.0, sodium: 0.45 },
+{ id: 'chicken-stir-fry', name: 'Chicken Stir Fry', category: 'Meat', calories: 200, protein: 26.0, carbs: 4.0, fat: 9.0, fiber: 1.0, sugar: 2.0, sodium: 0.5 },
+{ id: 'paneer-curry-light', name: 'Paneer Curry (Light)', category: 'Dairy', calories: 220, protein: 14.0, carbs: 8.0, fat: 15.0, fiber: 2.0, sugar: 3.0, sodium: 0.45 },
+
+// Late Night / Light Options
+{ id: 'turmeric-milk', name: 'Turmeric Milk', category: 'Beverages', calories: 90, protein: 3.5, carbs: 6.0, fat: 4.0, fiber: 0, sugar: 5.0, sodium: 0.05 },
+{ id: 'warm-milk', name: 'Warm Milk', category: 'Beverages', calories: 60, protein: 3.2, carbs: 4.8, fat: 3.0, fiber: 0, sugar: 4.8, sodium: 0.04 },
+{ id: 'herbal-tea', name: 'Herbal Tea', category: 'Beverages', calories: 5, protein: 0, carbs: 1.0, fat: 0, fiber: 0, sugar: 0, sodium: 0 }
+
 ];
 
 export const foodApiService = {

@@ -14,6 +14,9 @@ const DietTracker = () => {
   const [selectedFood, setSelectedFood] = useState(null);
   const [quantity, setQuantity] = useState(100);
   const [mealType, setMealType] = useState('breakfast');
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [suggestions, setSuggestions] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
 
   const todayEntries = dietEntries.filter(entry => 
     entry.date === selectedDate
@@ -22,12 +25,103 @@ const DietTracker = () => {
   const dietPlan = userProfile ? dietCalculator.generateDietPlan(userProfile, userProfile.goal) : null;
   const dailyAnalysis = dietPlan ? dietCalculator.analyzeDailyIntake(todayEntries, dietPlan.macros) : null;
 
+  // Get categories from food API
+  const categories = ['all', ...foodApiService.getCategories()];
+
   const handleSearch = async () => {
     if (!searchQuery.trim()) return;
     setSearching(true);
-    const results = await foodApiService.searchFood(searchQuery);
+    setShowSuggestions(false);
+    
+    let results;
+    if (selectedCategory === 'all') {
+      results = await foodApiService.searchFood(searchQuery);
+    } else {
+      // Filter by category
+      const categoryResults = foodApiService.getIndianFoodsByCategory(selectedCategory);
+      const lowerQuery = searchQuery.toLowerCase();
+      results = categoryResults
+        .filter(food => food.name.toLowerCase().includes(lowerQuery))
+        .map(food => ({
+          id: food.id,
+          name: food.name,
+          brand: 'Indian Food Database',
+          servingSize: '100g',
+          nutrition: {
+            calories: food.calories,
+            protein: food.protein,
+            carbs: food.carbs,
+            fat: food.fat,
+            fiber: food.fiber,
+            sugar: food.sugar,
+            sodium: food.sodium
+          }
+        }));
+    }
+    
     setSearchResults(results);
     setSearching(false);
+  };
+
+  const handleSearchInputChange = (e) => {
+    const value = e.target.value;
+    setSearchQuery(value);
+    
+    // Show suggestions as user types
+    if (value.trim().length >= 2) {
+      const allFoods = foodApiService.getIndianFoodsByCategory(
+        selectedCategory === 'all' ? null : selectedCategory
+      );
+      const lowerValue = value.toLowerCase();
+      const matchedSuggestions = allFoods
+        .filter(food => food.name.toLowerCase().includes(lowerValue))
+        .slice(0, 5)
+        .map(food => food.name);
+      
+      setSuggestions(matchedSuggestions);
+      setShowSuggestions(matchedSuggestions.length > 0);
+    } else {
+      setSuggestions([]);
+      setShowSuggestions(false);
+    }
+  };
+
+  const handleSuggestionClick = (suggestion) => {
+    setSearchQuery(suggestion);
+    setShowSuggestions(false);
+    // Automatically search when suggestion is clicked
+    setTimeout(() => {
+      const searchBtn = document.querySelector('.search-btn');
+      if (searchBtn) searchBtn.click();
+    }, 100);
+  };
+
+  const handleCategoryChange = (category) => {
+    setSelectedCategory(category);
+    setSearchQuery('');
+    setSearchResults([]);
+    setShowSuggestions(false);
+    
+    // If category is selected (not 'all'), show all foods in that category
+    if (category !== 'all') {
+      const categoryFoods = foodApiService.getIndianFoodsByCategory(category);
+      const results = categoryFoods.map(food => ({
+        id: food.id,
+        name: food.name,
+        brand: 'Indian Food Database',
+        servingSize: '100g',
+        nutrition: {
+          calories: food.calories,
+          protein: food.protein,
+          carbs: food.carbs,
+          fat: food.fat,
+          fiber: food.fiber,
+          sugar: food.sugar,
+          sodium: food.sodium
+        }
+      }));
+      setSearchResults(results);
+    }
   };
 
   const handleAddEntry = async () => {
@@ -128,15 +222,63 @@ const DietTracker = () => {
 
       <div className="add-food-section">
         <h3>Add Food Entry</h3>
+        
+        <div className="category-filter">
+          <label>Category:</label>
+          <div className="category-buttons">
+            {categories.map(category => (
+              <button
+                key={category}
+                className={`category-btn ${selectedCategory === category ? 'active' : ''}`}
+                onClick={() => handleCategoryChange(category)}
+              >
+                {category === 'all' ? '🍽️ All' : 
+                 category === 'Dairy' ? '🥛 Dairy' :
+                 category === 'Grains' ? '🌾 Grains' :
+                 category === 'Pulses' ? '🫘 Pulses' :
+                 category === 'Vegetables' ? '🥬 Vegetables' :
+                 category === 'Fruits' ? '🍎 Fruits' :
+                 category === 'Meat' ? '🍗 Meat' :
+                 category === 'Seafood' ? '🐟 Seafood' :
+                 category === 'Eggs' ? '🥚 Eggs' :
+                 category === 'Snacks' ? '🍿 Snacks' :
+                 category === 'Sweets' ? '🍬 Sweets' :
+                 category === 'Beverages' ? '☕ Beverages' : category}
+              </button>
+            ))}
+          </div>
+          {selectedCategory !== 'all' && (
+            <p className="category-hint">
+              💡 Showing all {selectedCategory.toLowerCase()} items. Search to filter further.
+            </p>
+          )}
+        </div>
+
         <div className="search-container">
-          <input
-            type="text"
-            placeholder="Search for food..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-            className="search-input"
-          />
+          <div className="search-input-wrapper">
+            <input
+              type="text"
+              placeholder={`Search ${selectedCategory === 'all' ? 'all foods' : selectedCategory.toLowerCase()}...`}
+              value={searchQuery}
+              onChange={handleSearchInputChange}
+              onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+              onFocus={() => suggestions.length > 0 && setShowSuggestions(true)}
+              className="search-input"
+            />
+            {showSuggestions && suggestions.length > 0 && (
+              <div className="suggestions-dropdown">
+                {suggestions.map((suggestion, index) => (
+                  <div
+                    key={index}
+                    className="suggestion-item"
+                    onClick={() => handleSuggestionClick(suggestion)}
+                  >
+                    🔍 {suggestion}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
           <button onClick={handleSearch} disabled={searching} className="search-btn">
             {searching ? 'Searching...' : 'Search'}
           </button>
