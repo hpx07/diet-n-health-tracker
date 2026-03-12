@@ -17,20 +17,10 @@ function PrivateRoute({ children }) {
 
   if (loading) {
     return (
-      <div style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: '100vh',
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        color: 'white',
-        fontSize: '20px',
-        fontFamily: 'Arial, sans-serif'
-      }}>
-        <div style={{ textAlign: 'center' }}>
-          <div style={{ marginBottom: '20px', fontSize: '48px' }}>🍽️</div>
-          <div>Loading Diet-N-Health Tracker...</div>
-        </div>
+      <div className="app-loading">
+        <div className="brand-icon">🫀</div>
+        <div className="brand-text">Diet-N-Health Tracker</div>
+        <div className="spinner"></div>
       </div>
     );
   }
@@ -44,20 +34,10 @@ function AppRoutes() {
 
   if (loading) {
     return (
-      <div style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: '100vh',
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        color: 'white',
-        fontSize: '20px',
-        fontFamily: 'Arial, sans-serif'
-      }}>
-        <div style={{ textAlign: 'center' }}>
-          <div style={{ marginBottom: '20px', fontSize: '48px' }}>🍽️</div>
-          <div>Loading...</div>
-        </div>
+      <div className="app-loading">
+        <div className="brand-icon">🫀</div>
+        <div className="brand-text">Loading...</div>
+        <div className="spinner"></div>
       </div>
     );
   }
@@ -101,7 +81,7 @@ function App() {
           // Set status bar style
           try {
             await StatusBar.setStyle({ style: Style.Light });
-            await StatusBar.setBackgroundColor({ color: '#4CAF50' });
+            await StatusBar.setBackgroundColor({ color: '#0D9488' });
           } catch (error) {
             console.log('Status bar not available');
           }
@@ -162,20 +142,10 @@ function App() {
 
   if (!appReady) {
     return (
-      <div style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: '100vh',
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        color: 'white',
-        fontSize: '20px',
-        fontFamily: 'Arial, sans-serif'
-      }}>
-        <div style={{ textAlign: 'center' }}>
-          <div style={{ marginBottom: '20px', fontSize: '48px' }}>🍽️</div>
-          <div>Starting Diet-N-Health Tracker...</div>
-        </div>
+      <div className="app-loading">
+        <div className="brand-icon">🫀</div>
+        <div className="brand-text">Starting up...</div>
+        <div className="spinner"></div>
       </div>
     );
   }

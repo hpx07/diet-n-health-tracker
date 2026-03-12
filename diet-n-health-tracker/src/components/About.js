@@ -82,12 +82,12 @@ const About = () => {
       <div className="about-section">
         <h3>ℹ️ About</h3>
         <p className="about-text">
-          Diet-N-Health Tracker is a comprehensive health and diet tracking application 
-          designed to help you monitor your nutrition, track health tests, set goals, 
-          and achieve your wellness objectives.
+          Diet-N-Health Tracker is a comprehensive health and diet tracking application
+          designed to help you monitor your nutrition, track health tests, set goals,
+          and achieve your wellness objectives, build by developer HPX07 for personal use and practice.
         </p>
         <p className="about-text">
-          Built with React and Capacitor, this app provides a seamless experience 
+          Built with React and Capacitor, this app provides a seamless experience
           across web and mobile platforms with offline support and smart notifications.
         </p>
       </div>
@@ -97,11 +97,11 @@ const About = () => {
         <div className="info-grid">
           <div className="info-item">
             <label>Email:</label>
-            <span>support@your-domain.com</span>
+            <span>yournamepleaseplease@gmail.com</span>
           </div>
           <div className="info-item">
             <label>Website:</label>
-            <span>https://your-domain.com</span>
+            <span>https://github.com/hpx07</span>
           </div>
         </div>
       </div>

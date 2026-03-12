@@ -1,224 +1,179 @@
-.notification-settings {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 20px;
-}
+/* ============ NotificationSettings ============ */
+
+.notification-settings { width: 100%; }
 
 .notification-settings h2 {
-  color: #2c3e50;
-  margin-bottom: 30px;
-  font-size: 28px;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--c-text);
+  margin-bottom: 10px;
 }
 
+/* Settings sections */
 .settings-section {
-  background: white;
-  border-radius: 12px;
-  padding: 25px;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background: var(--c-surface);
+  border-radius: var(--radius);
+  padding: 12px;
+  margin-bottom: 8px;
+  box-shadow: var(--shadow-xs);
 }
 
 .settings-section h3 {
-  color: #34495e;
-  margin-bottom: 20px;
-  font-size: 20px;
-  border-bottom: 2px solid #4CAF50;
-  padding-bottom: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--c-text-2);
+  margin-bottom: 8px;
+  border-bottom: 2px solid var(--c-primary-l);
+  padding-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: .4px;
 }
 
 .setting-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px 0;
-  border-bottom: 1px solid #ecf0f1;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--c-border);
+  gap: 10px;
 }
 
-.setting-item:last-child {
-  border-bottom: none;
-}
+.setting-item:last-child { border-bottom: none; }
 
-.setting-info {
-  flex: 1;
-}
+.setting-info { flex: 1; min-width: 0; }
 
 .setting-info label {
   display: block;
+  font-size: 13px;
   font-weight: 600;
-  color: #2c3e50;
-  margin-bottom: 5px;
-  font-size: 16px;
+  color: var(--c-text);
+  margin-bottom: 2px;
 }
 
 .setting-description {
-  color: #7f8c8d;
-  font-size: 14px;
+  color: var(--c-text-3);
+  font-size: 11px;
   margin: 0;
+  line-height: 1.4;
 }
 
+/* Toggle switch */
 .toggle-switch {
   position: relative;
   display: inline-block;
-  width: 60px;
-  height: 34px;
+  width: 44px;
+  height: 24px;
+  flex-shrink: 0;
 }
 
-.toggle-switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
+.toggle-switch input { opacity: 0; width: 0; height: 0; }
 
 .toggle-slider {
   position: absolute;
   cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #ccc;
-  transition: 0.4s;
-  border-radius: 34px;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: #CBD5E1;
+  transition: .3s;
+  border-radius: 24px;
 }
 
-.toggle-slider:before {
+.toggle-slider::before {
   position: absolute;
   content: "";
-  height: 26px;
-  width: 26px;
-  left: 4px;
-  bottom: 4px;
-  background-color: white;
-  transition: 0.4s;
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background: #fff;
+  transition: .3s;
   border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0,0,0,.2);
 }
 
-.toggle-switch input:checked + .toggle-slider {
-  background-color: #4CAF50;
-}
+.toggle-switch input:checked + .toggle-slider { background: var(--c-primary); }
+.toggle-switch input:checked + .toggle-slider::before { transform: translateX(20px); }
 
-.toggle-switch input:checked + .toggle-slider:before {
-  transform: translateX(26px);
-}
-
+/* Meal times grid */
 .meal-times {
-  margin-top: 15px;
-  padding: 15px;
-  background: #f8f9fa;
-  border-radius: 8px;
+  margin-top: 10px;
+  padding: 10px;
+  background: var(--c-bg);
+  border-radius: var(--radius-sm);
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 15px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
 }
 
-.time-input {
-  display: flex;
-  flex-direction: column;
-}
+.time-input { display: flex; flex-direction: column; gap: 4px; }
 
 .time-input label {
-  font-weight: 600;
-  color: #2c3e50;
-  margin-bottom: 8px;
-  font-size: 14px;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--c-text-2);
+  text-transform: uppercase;
+  letter-spacing: .3px;
 }
 
 .time-input input[type="time"] {
-  padding: 10px;
-  border: 2px solid #ddd;
-  border-radius: 6px;
-  font-size: 16px;
-  transition: border-color 0.3s;
+  padding: 6px 7px;
+  border: 1.5px solid var(--c-border);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-family: var(--font);
 }
 
-.time-input input[type="time"]:focus {
-  outline: none;
-  border-color: #4CAF50;
-}
+.time-input input[type="time"]:focus { border-color: var(--c-primary); }
 
+/* Actions */
 .settings-actions {
   display: flex;
-  gap: 15px;
-  margin-top: 30px;
-  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+  flex-direction: column;
 }
 
 .btn-primary,
 .btn-secondary {
-  padding: 12px 30px;
+  padding: 10px;
   border: none;
-  border-radius: 8px;
-  font-size: 16px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font);
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s;
-  flex: 1;
-  min-width: 200px;
+  transition: background .15s;
+  width: 100%;
 }
 
 .btn-primary {
-  background: #4CAF50;
-  color: white;
+  background: var(--c-primary);
+  color: #fff;
 }
-
-.btn-primary:hover {
-  background: #45a049;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
-}
+.btn-primary:hover { background: var(--c-primary-d); }
 
 .btn-secondary {
-  background: #3498db;
-  color: white;
+  background: #3B82F6;
+  color: #fff;
 }
+.btn-secondary:hover { background: #2563EB; }
 
-.btn-secondary:hover {
-  background: #2980b9;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
-}
-
+/* Info box */
 .settings-info-box {
-  margin-top: 20px;
-  padding: 15px;
-  background: #e8f5e9;
-  border-left: 4px solid #4CAF50;
-  border-radius: 6px;
+  margin-top: 8px;
+  padding: 10px;
+  background: var(--c-primary-l);
+  border-left: 3px solid var(--c-primary);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
 }
 
 .settings-info-box p {
   margin: 0;
-  color: #2c3e50;
-  font-size: 14px;
-  line-height: 1.6;
+  color: var(--c-primary-d);
+  font-size: 12px;
+  line-height: 1.5;
 }
 
-@media (max-width: 768px) {
-  .notification-settings {
-    padding: 15px;
-  }
-
-  .settings-section {
-    padding: 20px;
-  }
-
-  .setting-item {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 15px;
-  }
-
-  .meal-times {
-    grid-template-columns: 1fr;
-  }
-
-  .settings-actions {
-    flex-direction: column;
-  }
-
-  .btn-primary,
-  .btn-secondary {
-    width: 100%;
-    min-width: auto;
-  }
+@media (min-width: 480px) {
+  .settings-actions { flex-direction: row; }
+  .meal-times { grid-template-columns: repeat(3, 1fr); }
 }

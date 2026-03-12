@@ -1,41 +1,182 @@
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+/* ============================================================
+   GLOBAL DESIGN SYSTEM — Diet-N-Health Tracker
+   Healthcare palette: Teal primary + Emerald accent
+   Font: Inter (Google Fonts) — crisp at small sizes
+   Strategy: Mobile-first, compact, no excess padding
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* ---------- Design Tokens ---------- */
+:root {
+  --c-primary:    #0D9488;   /* teal-600  — trusted/medical */
+  --c-primary-d:  #0B7A70;   /* teal-700  — pressed/header */
+  --c-primary-l:  #CCFBF1;   /* teal-100  — light bg tint  */
+  --c-accent:     #10B981;   /* emerald-500 — progress/good */
+  --c-accent-l:   #D1FAE5;   /* emerald-100 */
+  --c-danger:     #F43F5E;   /* rose-500  — delete/alert   */
+  --c-danger-l:   #FFE4E6;   /* rose-100  */
+  --c-warn:       #F59E0B;   /* amber-400 */
+  --c-warn-l:     #FEF3C7;
+  --c-surface:    #FFFFFF;
+  --c-bg:         #F0FDF4;   /* near-white green tint       */
+  --c-border:     #E2E8F0;
+  --c-text:       #0F172A;   /* slate-900 */
+  --c-text-2:     #475569;   /* slate-600 */
+  --c-text-3:     #94A3B8;   /* slate-400 */
+  --radius-sm:    6px;
+  --radius:       10px;
+  --radius-lg:    14px;
+  --shadow-xs:    0 1px 3px rgba(0,0,0,.07);
+  --shadow-sm:    0 2px 8px rgba(0,0,0,.09);
+  --font:         'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
+
+/* ---------- Reset ---------- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: var(--font);
+  font-size: 14px;
+  color: var(--c-text);
+  background: var(--c-bg);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: #f5f7fa;
+  overscroll-behavior: none;
 }
 
-.loading {
-  display: flex;
-  justify-content: center;
+/* ---------- Scrollbar (slim) ---------- */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--c-border); border-radius: 4px; }
+
+/* ---------- Shared form atoms ---------- */
+input, select, textarea {
+  font-family: var(--font);
+  font-size: 14px;
+  color: var(--c-text);
+  background: var(--c-surface);
+  border: 1.5px solid var(--c-border);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+  width: 100%;
+  outline: none;
+  transition: border-color .2s;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: var(--c-primary);
+  box-shadow: 0 0 0 3px rgba(13,148,136,.12);
+}
+
+/* ---------- Button base ---------- */
+.btn {
+  display: inline-flex;
   align-items: center;
-  min-height: 100vh;
-  font-size: 20px;
-  color: #667eea;
+  justify-content: center;
+  gap: 5px;
+  padding: 9px 16px;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform .15s, opacity .15s;
+  white-space: nowrap;
+}
+.btn:active { transform: scale(.96); }
+
+.btn-primary {
+  background: var(--c-primary);
+  color: #fff;
+}
+.btn-primary:hover { background: var(--c-primary-d); }
+
+.btn-ghost {
+  background: var(--c-bg);
+  color: var(--c-text-2);
+  border: 1.5px solid var(--c-border);
+}
+.btn-ghost:hover { background: var(--c-border); }
+
+.btn-danger {
+  background: var(--c-danger);
+  color: #fff;
 }
 
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+.btn-full { width: 100%; }
+
+/* ---------- Card ---------- */
+.card {
+  background: var(--c-surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  padding: 12px;
 }
 
-::-webkit-scrollbar-track {
-  background: #f1f1f1;
+/* ---------- Section title ---------- */
+.section-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--c-text);
+  margin-bottom: 10px;
 }
 
-::-webkit-scrollbar-thumb {
-  background: #888;
-  border-radius: 4px;
+/* ---------- Loading screen ---------- */
+.app-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background: var(--c-primary);
+  color: #fff;
+  gap: 12px;
 }
+.app-loading .brand-icon { font-size: 40px; }
+.app-loading .brand-text {
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: .3px;
+  opacity: .9;
+}
+.app-loading .spinner {
+  width: 24px; height: 24px;
+  border: 3px solid rgba(255,255,255,.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin .7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
 
-::-webkit-scrollbar-thumb:hover {
-  background: #555;
+/* ---------- Badge ---------- */
+.badge {
+  display: inline-block;
+  padding: 2px 7px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .3px;
 }
+.badge-primary { background: var(--c-primary-l); color: var(--c-primary-d); }
+.badge-accent  { background: var(--c-accent-l);  color: #065F46; }
+.badge-danger  { background: var(--c-danger-l);  color: #9F1239; }
+.badge-warn    { background: var(--c-warn-l);    color: #92400E; }
+
+/* ---------- Progress bar ---------- */
+.progress-track {
+  height: 6px;
+  background: var(--c-border);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  border-radius: 3px;
+  background: var(--c-primary);
+  transition: width .4s ease;
+}
+.progress-fill.accent  { background: var(--c-accent); }
+.progress-fill.protein { background: #8B5CF6; }
+.progress-fill.carbs   { background: #3B82F6; }
+.progress-fill.fat     { background: #F59E0B; }

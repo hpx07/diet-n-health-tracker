@@ -39,22 +39,20 @@ const Login = () => {
 
   return (
     <div className="login-container">
+      {/* Brand */}
+      <div className="login-brand">
+        <div className="login-brand-icon">🫀</div>
+        <h1>Diet-N-Health</h1>
+        <p>Track diet · Monitor health · Achieve goals</p>
+      </div>
+
+      {/* Card */}
       <div className="login-card">
-        <h1>Diet-N-Health Tracker</h1>
-        <p className="subtitle">Track your diet, monitor your health, achieve your goals</p>
-        
+        <div className="login-card-title">Sign in to continue</div>
+
         <div className="login-options">
           {error && (
-            <div className="error-message" style={{
-              padding: '10px',
-              marginBottom: '15px',
-              background: '#fee',
-              border: '1px solid #fcc',
-              borderRadius: '6px',
-              color: '#c33'
-            }}>
-              {error}
-            </div>
+            <div className="error-message">{error}</div>
           )}
 
           {hasGoogleAuth ? (
@@ -69,31 +67,22 @@ const Login = () => {
               />
             </GoogleOAuthProvider>
           ) : (
-            <div className="google-disabled" style={{
-              padding: '15px',
-              background: '#f0f0f0',
-              borderRadius: '8px',
-              textAlign: 'center',
-              color: '#666',
-              marginBottom: '15px'
-            }}>
-              <p style={{ margin: 0 }}>Google login is not configured</p>
+            <div className="google-disabled-box">
+              <p style={{ margin: 0 }}>Google login not configured</p>
               <small>Continue without login to use the app</small>
             </div>
           )}
 
-          <div className="divider">
-            <span>OR</span>
-          </div>
+          <div className="login-divider"><span>OR</span></div>
 
           <button className="skip-button" onClick={handleSkip}>
             Continue Without Login
           </button>
 
           <p className="info-text">
-            {hasGoogleAuth 
-              ? 'Login with Google to sync your data across devices. Or continue without login to use the app with local storage only.'
-              : 'Continue without login to use the app with local storage. All your data will be saved on this device.'}
+            {hasGoogleAuth
+              ? 'Sign in with Google to sync data across devices, or continue with local storage only.'
+              : 'All data is saved on this device. No account needed.'}
           </p>
         </div>
       </div>

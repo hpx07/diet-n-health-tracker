@@ -16,12 +16,21 @@ const Dashboard = () => {
   const { user, logout, isAuthenticated } = useAuth();
   const { userProfile, dietEntries, testReports } = useApp();
   const [activeTab, setActiveTab] = useState('overview');
+  const [showMoreMenu, setShowMoreMenu] = useState(false);
 
   const handleLogout = () => {
     if (window.confirm('Are you sure you want to logout?')) {
       logout();
     }
   };
+
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+    setShowMoreMenu(false);
+  };
+
+  // Check if a tab is in the "more" group
+  const moreTabActive = ['goals', 'checklist', 'notifications', 'about'].includes(activeTab);
 
   const renderOverview = () => {
     // Calculate today's stats
@@ -37,8 +46,11 @@ const Dashboard = () => {
       <div>
         {/* Greeting */}
         <div className="greeting-section">
-          <h2>Hi, {user?.name || 'Guest'}!</h2>
-          <p>Welcome Back</p>
+          <div className="greeting-avatar">🫀</div>
+          <div className="greeting-text">
+            <h2>Hi, {user?.name || 'Guest'}!</h2>
+            <p>Welcome back — stay on track!</p>
+          </div>
         </div>
 
         {/* Stats Grid */}
@@ -84,19 +96,19 @@ const Dashboard = () => {
         <div className="quick-actions">
           <h3>Quick Actions</h3>
           <div className="action-buttons">
-            <button className="action-btn" onClick={() => setActiveTab('diet')}>
+            <button className="action-btn" onClick={() => handleTabChange('diet')}>
               <span className="action-btn-icon">🍽️</span>
               <span>Add Meal</span>
             </button>
-            <button className="action-btn" onClick={() => setActiveTab('tests')}>
+            <button className="action-btn" onClick={() => handleTabChange('tests')}>
               <span className="action-btn-icon">🩺</span>
               <span>Add Test</span>
             </button>
-            <button className="action-btn" onClick={() => setActiveTab('goals')}>
+            <button className="action-btn" onClick={() => handleTabChange('goals')}>
               <span className="action-btn-icon">🎯</span>
               <span>Set Goal</span>
             </button>
-            <button className="action-btn" onClick={() => setActiveTab('checklist')}>
+            <button className="action-btn" onClick={() => handleTabChange('checklist')}>
               <span className="action-btn-icon">✅</span>
               <span>Checklist</span>
             </button>
@@ -107,7 +119,7 @@ const Dashboard = () => {
         {!userProfile && (
           <div className="setup-banner">
             <p>⚠️ Complete your profile for personalized recommendations</p>
-            <button onClick={() => setActiveTab('profile')}>Setup Now</button>
+            <button onClick={() => handleTabChange('profile')}>Setup Now</button>
           </div>
         )}
       </div>
@@ -165,63 +177,63 @@ const Dashboard = () => {
         <nav className="sidebar">
           <button
             className={`nav-item ${activeTab === 'overview' ? 'active' : ''}`}
-            onClick={() => setActiveTab('overview')}
+            onClick={() => handleTabChange('overview')}
           >
             <span className="nav-icon">📊</span>
             <span className="nav-label">Overview</span>
           </button>
           <button
             className={`nav-item ${activeTab === 'diet' ? 'active' : ''}`}
-            onClick={() => setActiveTab('diet')}
+            onClick={() => handleTabChange('diet')}
           >
             <span className="nav-icon">🍽️</span>
             <span className="nav-label">Diet Tracker</span>
           </button>
           <button
             className={`nav-item ${activeTab === 'tests' ? 'active' : ''}`}
-            onClick={() => setActiveTab('tests')}
+            onClick={() => handleTabChange('tests')}
           >
             <span className="nav-icon">🩺</span>
             <span className="nav-label">Test Reports</span>
           </button>
           <button
             className={`nav-item ${activeTab === 'goals' ? 'active' : ''}`}
-            onClick={() => setActiveTab('goals')}
+            onClick={() => handleTabChange('goals')}
           >
             <span className="nav-icon">🎯</span>
             <span className="nav-label">Health Goals</span>
           </button>
           <button
             className={`nav-item ${activeTab === 'checklist' ? 'active' : ''}`}
-            onClick={() => setActiveTab('checklist')}
+            onClick={() => handleTabChange('checklist')}
           >
             <span className="nav-icon">✅</span>
             <span className="nav-label">Daily Checklist</span>
           </button>
           <button
             className={`nav-item ${activeTab === 'reports' ? 'active' : ''}`}
-            onClick={() => setActiveTab('reports')}
+            onClick={() => handleTabChange('reports')}
           >
             <span className="nav-icon">📈</span>
             <span className="nav-label">Reports</span>
           </button>
           <button
             className={`nav-item ${activeTab === 'notifications' ? 'active' : ''}`}
-            onClick={() => setActiveTab('notifications')}
+            onClick={() => handleTabChange('notifications')}
           >
             <span className="nav-icon">🔔</span>
             <span className="nav-label">Notifications</span>
           </button>
           <button
             className={`nav-item ${activeTab === 'profile' ? 'active' : ''}`}
-            onClick={() => setActiveTab('profile')}
+            onClick={() => handleTabChange('profile')}
           >
             <span className="nav-icon">👤</span>
             <span className="nav-label">Profile</span>
           </button>
           <button
             className={`nav-item ${activeTab === 'about' ? 'active' : ''}`}
-            onClick={() => setActiveTab('about')}
+            onClick={() => handleTabChange('about')}
           >
             <span className="nav-icon">ℹ️</span>
             <span className="nav-label">About</span>
@@ -233,42 +245,77 @@ const Dashboard = () => {
         </main>
       </div>
 
+      {/* More Menu Overlay */}
+      {showMoreMenu && (
+        <div className="more-overlay" onClick={() => setShowMoreMenu(false)}>
+          <div className="more-sheet" onClick={(e) => e.stopPropagation()}>
+            <div className="more-sheet-header">
+              <span>More</span>
+              <button className="more-close" onClick={() => setShowMoreMenu(false)}>✕</button>
+            </div>
+            <button className={`more-item ${activeTab === 'goals' ? 'active' : ''}`} onClick={() => handleTabChange('goals')}>
+              <span className="more-icon">🎯</span>
+              <span>Health Goals</span>
+            </button>
+            <button className={`more-item ${activeTab === 'checklist' ? 'active' : ''}`} onClick={() => handleTabChange('checklist')}>
+              <span className="more-icon">✅</span>
+              <span>Daily Checklist</span>
+            </button>
+            <button className={`more-item ${activeTab === 'notifications' ? 'active' : ''}`} onClick={() => handleTabChange('notifications')}>
+              <span className="more-icon">🔔</span>
+              <span>Notifications</span>
+            </button>
+            <button className={`more-item ${activeTab === 'about' ? 'active' : ''}`} onClick={() => handleTabChange('about')}>
+              <span className="more-icon">ℹ️</span>
+              <span>About</span>
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Mobile Bottom Navigation */}
       <nav className="bottom-nav">
         <button
           className={`nav-item ${activeTab === 'overview' ? 'active' : ''}`}
-          onClick={() => setActiveTab('overview')}
+          onClick={() => handleTabChange('overview')}
         >
           <span className="nav-icon">📊</span>
           <span className="nav-label">Home</span>
         </button>
         <button
           className={`nav-item ${activeTab === 'diet' ? 'active' : ''}`}
-          onClick={() => setActiveTab('diet')}
+          onClick={() => handleTabChange('diet')}
         >
           <span className="nav-icon">🍽️</span>
           <span className="nav-label">Diet</span>
         </button>
         <button
           className={`nav-item ${activeTab === 'tests' ? 'active' : ''}`}
-          onClick={() => setActiveTab('tests')}
+          onClick={() => handleTabChange('tests')}
         >
           <span className="nav-icon">🩺</span>
           <span className="nav-label">Tests</span>
         </button>
         <button
           className={`nav-item ${activeTab === 'reports' ? 'active' : ''}`}
-          onClick={() => setActiveTab('reports')}
+          onClick={() => handleTabChange('reports')}
         >
           <span className="nav-icon">📈</span>
           <span className="nav-label">Reports</span>
         </button>
         <button
           className={`nav-item ${activeTab === 'profile' ? 'active' : ''}`}
-          onClick={() => setActiveTab('profile')}
+          onClick={() => handleTabChange('profile')}
         >
           <span className="nav-icon">👤</span>
           <span className="nav-label">Profile</span>
+        </button>
+        <button
+          className={`nav-item ${moreTabActive ? 'active' : ''}`}
+          onClick={() => setShowMoreMenu(!showMoreMenu)}
+        >
+          <span className="nav-icon">⋯</span>
+          <span className="nav-label">More</span>
         </button>
       </nav>
     </div>
