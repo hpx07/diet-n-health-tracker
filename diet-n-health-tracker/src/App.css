@@ -42,7 +42,6 @@ body {
   background: var(--c-bg);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overscroll-behavior: none;
 }
 
 /* ---------- Scrollbar (slim) ---------- */
@@ -79,9 +78,15 @@ select {
   white-space: nowrap;
 }
 
-/* Prevent horizontal scroll on full page */
-html, body {
+/* Prevent horizontal scroll but NEVER block vertical scroll */
+html {
+  overflow-x: clip;    /* clip doesn't create a new stacking context like hidden */
+  overflow-y: scroll;  /* always allow vertical scrolling */
+}
+body {
   overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch; /* smooth scroll on iOS */
   max-width: 100vw;
 }
 
@@ -202,3 +207,47 @@ input:focus, select:focus, textarea:focus {
 .progress-fill.protein { background: #8B5CF6; }
 .progress-fill.carbs   { background: #3B82F6; }
 .progress-fill.fat     { background: #F59E0B; }
+/* ---------- Mobile Improvements ---------- */
+
+/* Ensure all containers respect viewport bounds */
+* {
+  max-width: 100%;
+}
+
+/* Improve touch scrolling on iOS */
+body {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Prevent text overflow in inputs */
+input, select, textarea {
+  text-overflow: ellipsis;
+}
+
+/* Improve mobile scrolling for containers */
+.scrollable {
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: var(--c-border) transparent;
+}
+
+/* Better mobile tap targets */
+button, .btn, .nav-item {
+  min-height: 44px; /* iOS recommended minimum tap target */
+  min-width: 44px;
+}
+
+/* Prevent zoom on input focus for better UX */
+@media screen and (max-width: 768px) {
+  input[type="text"],
+  input[type="email"],
+  input[type="number"],
+  input[type="password"],
+  input[type="search"],
+  input[type="tel"],
+  input[type="url"],
+  select,
+  textarea {
+    font-size: 16px !important; /* Prevent iOS zoom */
+  }
+}

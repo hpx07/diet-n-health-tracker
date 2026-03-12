@@ -300,4 +300,4 @@ For issues, questions, or suggestions:
 
 ---
 
-Built with ❤️ for health-conscious individuals
+Built with ❤️ for health-conscious individuals. Build by [HPX07](https://github.com/hpx07)

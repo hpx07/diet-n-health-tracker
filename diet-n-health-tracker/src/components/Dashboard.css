@@ -4,7 +4,8 @@
 .dashboard {
   min-height: 100vh;
   background: var(--c-bg);
-  padding-bottom: calc(60px + var(--sab));
+  padding-bottom: calc(70px + var(--sab)); /* Increased padding for better bottom nav clearance */
+  overflow-x: hidden; /* Prevent horizontal scroll */
 }
 
 /* --- Header --- */
@@ -150,6 +151,10 @@
   max-width: 600px;
   margin: 0 auto;
   padding: 12px;
+  /* Ensure content doesn't exceed viewport */
+  width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
 }
 
 /* Desktop sidebar hidden on mobile */
@@ -168,8 +173,11 @@
   border-top: 1px solid var(--c-border);
   display: flex;
   justify-content: space-around;
-  z-index: 100;
+  z-index: 200; /* Higher z-index than header to prevent conflicts */
   box-shadow: 0 -2px 10px rgba(0,0,0,.06);
+  /* Ensure nav doesn't exceed viewport */
+  max-width: 100vw;
+  overflow: hidden;
 }
 
 .nav-item {
@@ -184,6 +192,8 @@
   flex: 1;
   min-width: 0;
   transition: none;
+  /* Prevent text overflow */
+  overflow: hidden;
 }
 
 .nav-icon {
@@ -196,6 +206,10 @@
   font-weight: 600;
   color: var(--c-text-3);
   letter-spacing: .2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }
 
 .nav-item.active .nav-icon { transform: scale(1.1); }
@@ -281,6 +295,150 @@
 .stat-card-label {
   font-size: 11px;
   color: var(--c-text-3);
+}
+/* --- Overview Progress Bar --- */
+.overview-progress-section {
+  display: block;
+  background: var(--c-surface);
+  border-radius: var(--radius);
+  padding: 14px;
+  margin-bottom: 10px;
+  box-shadow: var(--shadow-xs);
+}
+
+.overview-progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--c-text);
+  margin-bottom: 10px;
+}
+
+.overview-progress-pct {
+  color: var(--c-primary);
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.overview-progress-track {
+  width: 100%;
+  height: 10px;
+  background: var(--c-bg);
+  border-radius: 5px;
+  overflow: hidden;
+  margin-bottom: 12px;
+  border: 1px solid var(--c-border);
+}
+
+.overview-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--c-primary), var(--c-accent));
+  border-radius: 5px;
+  transition: width .4s ease;
+  min-width: 2px;
+}
+
+.overview-macro-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--c-text-2);
+  font-weight: 600;
+  padding: 8px 0 0;
+  border-top: 1px solid var(--c-border);
+}
+
+.overview-macro-row span {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+/* --- Overview Meals List --- */
+.overview-meals {
+  display: block;
+  background: var(--c-surface);
+  border-radius: var(--radius);
+  padding: 14px;
+  margin-bottom: 10px;
+  box-shadow: var(--shadow-xs);
+}
+
+.overview-meals h3 {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--c-text);
+  margin: 0 0 12px 0;
+}
+
+.overview-empty {
+  text-align: center;
+  padding: 20px 8px;
+  color: var(--c-text-3);
+  font-size: 13px;
+}
+
+.overview-empty p {
+  margin: 0 0 12px 0;
+}
+
+.overview-meal-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.overview-meal-group {
+  background: var(--c-bg);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  border: 1px solid var(--c-border);
+}
+
+.overview-meal-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--c-primary-d);
+  letter-spacing: .3px;
+  margin-bottom: 8px;
+  padding-bottom: 4px;
+  border-bottom: 1px dashed var(--c-border);
+}
+
+.overview-meal-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  min-height: 28px;
+  border-bottom: 1px solid var(--c-border);
+  gap: 10px;
+}
+
+.overview-meal-item:last-child { border-bottom: none; }
+
+.overview-meal-name {
+  font-size: 13px;
+  color: var(--c-text);
+  font-weight: 500;
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.overview-meal-cal {
+  font-size: 12px;
+  color: var(--c-primary);
+  font-weight: 700;
+  white-space: nowrap;
+  flex-shrink: 0;
+  background: var(--c-primary-l);
+  padding: 2px 8px;
+  border-radius: 10px;
 }
 
 /* --- Quick Actions --- */

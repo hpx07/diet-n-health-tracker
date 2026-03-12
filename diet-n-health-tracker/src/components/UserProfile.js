@@ -36,8 +36,39 @@ const UserProfile = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    saveUserProfile(formData);
-    generateDietPlan(formData);
+    
+    // Validate form data
+    const errors = [];
+    
+    if (!formData.name.trim()) {
+      errors.push('Name is required');
+    }
+    
+    if (!formData.age || formData.age < 1 || formData.age > 120) {
+      errors.push('Age must be between 1 and 120 years');
+    }
+    
+    if (!formData.height || formData.height < 50 || formData.height > 300) {
+      errors.push('Height must be between 50 and 300 cm');
+    }
+    
+    if (!formData.weight || formData.weight < 20 || formData.weight > 300) {
+      errors.push('Weight must be between 20 and 300 kg');
+    }
+    
+    if (errors.length > 0) {
+      console.error('Validation errors:', errors);
+      // You could show these errors to the user
+      return;
+    }
+    
+    try {
+      saveUserProfile(formData);
+      generateDietPlan(formData);
+      console.log('Profile saved successfully');
+    } catch (error) {
+      console.error('Error saving profile:', error);
+    }
   };
 
   return (

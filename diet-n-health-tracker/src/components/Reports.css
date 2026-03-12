@@ -15,6 +15,7 @@
   font-size: 16px;
   font-weight: 700;
   color: var(--c-text);
+  margin: 0;
 }
 
 .download-btn {
@@ -75,35 +76,65 @@
   font-size: 13px;
   font-weight: 700;
   color: var(--c-text);
-  margin-bottom: 10px;
-  margin-top: 16px;
+  margin: 16px 0 10px;
+  padding-bottom: 6px;
+  border-bottom: 2px solid var(--c-primary-l);
 }
 
 .report-section h3:first-child { margin-top: 0; }
 
-.no-data {
-  text-align: center;
-  color: var(--c-text-3);
-  padding: 36px 12px;
-  font-size: 13px;
+/* Chart container */
+.chart-container {
+  width: 100%;
+  margin-bottom: 4px;
+  border-radius: var(--radius-sm);
+  background: var(--c-bg);
+  padding: 6px 0;
 }
 
+/* Empty state card */
+.no-data-card {
+  text-align: center;
+  padding: 32px 16px;
+  background: var(--c-bg);
+  border-radius: var(--radius);
+  border: 2px dashed var(--c-border);
+}
+
+.no-data-icon {
+  font-size: 36px;
+  margin-bottom: 10px;
+}
+
+.no-data-card h4 {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--c-text);
+  margin: 0 0 6px 0;
+}
+
+.no-data-card p {
+  font-size: 13px;
+  color: var(--c-text-3);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Test sub-charts */
 .test-chart {
-  margin-bottom: 20px;
-  padding-bottom: 16px;
+  margin-bottom: 14px;
+  padding-bottom: 12px;
   border-bottom: 1px solid var(--c-border);
 }
 
-.test-chart:last-child { border-bottom: none; }
+.test-chart:last-child { border-bottom: none; margin-bottom: 0; }
 
 .test-chart h3 {
-  margin-top: 0;
-  margin-bottom: 10px;
+  margin-top: 0 !important;
   color: var(--c-primary);
 }
 
 @media (min-width: 480px) {
   .report-controls { flex-direction: row; }
   .control-group { flex: 1; }
-  .download-btn { align-self: auto; }
 }

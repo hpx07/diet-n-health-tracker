@@ -30,37 +30,45 @@ const DietTracker = () => {
 
   const handleSearch = async () => {
     if (!searchQuery.trim()) return;
-    setSearching(true);
-    setShowSuggestions(false);
     
-    let results;
-    if (selectedCategory === 'all') {
-      results = await foodApiService.searchFood(searchQuery);
-    } else {
-      // Filter by category
-      const categoryResults = foodApiService.getIndianFoodsByCategory(selectedCategory);
-      const lowerQuery = searchQuery.toLowerCase();
-      results = categoryResults
-        .filter(food => food.name.toLowerCase().includes(lowerQuery))
-        .map(food => ({
-          id: food.id,
-          name: food.name,
-          brand: 'Indian Food Database',
-          servingSize: '100g',
-          nutrition: {
-            calories: food.calories,
-            protein: food.protein,
-            carbs: food.carbs,
-            fat: food.fat,
-            fiber: food.fiber,
-            sugar: food.sugar,
-            sodium: food.sodium
-          }
-        }));
+    try {
+      setSearching(true);
+      setShowSuggestions(false);
+      
+      let results;
+      if (selectedCategory === 'all') {
+        results = await foodApiService.searchFood(searchQuery);
+      } else {
+        // Filter by category
+        const categoryResults = foodApiService.getIndianFoodsByCategory(selectedCategory);
+        const lowerQuery = searchQuery.toLowerCase();
+        results = categoryResults
+          .filter(food => food.name.toLowerCase().includes(lowerQuery))
+          .map(food => ({
+            id: food.id,
+            name: food.name,
+            brand: 'Indian Food Database',
+            servingSize: '100g',
+            nutrition: {
+              calories: food.calories,
+              protein: food.protein,
+              carbs: food.carbs,
+              fat: food.fat,
+              fiber: food.fiber,
+              sugar: food.sugar,
+              sodium: food.sodium
+            }
+          }));
+      }
+      
+      setSearchResults(results);
+    } catch (error) {
+      console.error('Error searching for food:', error);
+      setSearchResults([]);
+      // You could add a toast notification here for user feedback
+    } finally {
+      setSearching(false);
     }
-    
-    setSearchResults(results);
-    setSearching(false);
   };
 
   const handleSearchInputChange = (e) => {
@@ -125,23 +133,39 @@ const DietTracker = () => {
   };
 
   const handleAddEntry = async () => {
-    if (!selectedFood) return;
+    if (!selectedFood) {
+      console.warn('No food selected for entry');
+      return;
+    }
 
-    const entry = {
-      date: selectedDate,
-      mealType,
-      foodName: selectedFood.name,
-      brand: selectedFood.brand,
-      quantity,
-      nutrition: selectedFood.nutrition,
-      timestamp: new Date().toISOString()
-    };
+    if (!quantity || quantity <= 0) {
+      console.warn('Invalid quantity for food entry');
+      return;
+    }
 
-    await addDietEntry(entry);
-    setSelectedFood(null);
-    setSearchQuery('');
-    setSearchResults([]);
-    setQuantity(100);
+    try {
+      const qty = quantity === '' ? 100 : Number(quantity);
+      const entry = {
+        date: selectedDate,
+        mealType,
+        foodName: selectedFood.name,
+        brand: selectedFood.brand,
+        quantity: qty,
+        nutrition: selectedFood.nutrition,
+        timestamp: new Date().toISOString()
+      };
+
+      await addDietEntry(entry);
+      
+      // Reset form after successful addition
+      setSelectedFood(null);
+      setSearchQuery('');
+      setSearchResults([]);
+      setQuantity(100);
+    } catch (error) {
+      console.error('Error adding diet entry:', error);
+      // You could add user feedback here
+    }
   };
 
   return (
@@ -320,8 +344,9 @@ const DietTracker = () => {
                 <input
                   type="number"
                   value={quantity}
-                  onChange={(e) => setQuantity(Number(e.target.value))}
+                  onChange={(e) => setQuantity(e.target.value === '' ? '' : Number(e.target.value))}
                   min="1"
+                  placeholder="100"
                 />
               </div>
             </div>

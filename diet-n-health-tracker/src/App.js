@@ -129,12 +129,12 @@ function App() {
     initializeApp();
 
     return () => {
-      // Cleanup listeners
+      // Cleanup listeners only if they were successfully added
       if (Capacitor.isNativePlatform()) {
         try {
           CapacitorApp.removeAllListeners();
         } catch (error) {
-          console.log('Cleanup error:', error);
+          console.log('Cleanup error (non-critical):', error);
         }
       }
     };

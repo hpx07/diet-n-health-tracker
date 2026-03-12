@@ -36,11 +36,49 @@ const Dashboard = () => {
     // Calculate today's stats
     const today = new Date().toISOString().split('T')[0];
     const todayEntries = dietEntries?.filter(e => e.date === today) || [];
-    const todayCalories = todayEntries.reduce((sum, e) => sum + (e.calories || 0), 0);
-    const todayProtein = todayEntries.reduce((sum, e) => sum + (e.protein || 0), 0);
+    
+    // Calculate calories and protein from nutrition data
+    const todayCalories = todayEntries.reduce((sum, e) => {
+      if (e.nutrition && e.quantity) {
+        return sum + Math.round(e.nutrition.calories * e.quantity / 100);
+      }
+      return sum + (e.calories || 0);
+    }, 0);
+    
+    const todayProtein = todayEntries.reduce((sum, e) => {
+      if (e.nutrition && e.quantity) {
+        return sum + Math.round(e.nutrition.protein * e.quantity / 100);
+      }
+      return sum + (e.protein || 0);
+    }, 0);
+
+    const todayCarbs = todayEntries.reduce((sum, e) => {
+      if (e.nutrition && e.quantity) {
+        return sum + Math.round(e.nutrition.carbs * e.quantity / 100);
+      }
+      return sum;
+    }, 0);
+
+    const todayFat = todayEntries.reduce((sum, e) => {
+      if (e.nutrition && e.quantity) {
+        return sum + Math.round(e.nutrition.fat * e.quantity / 100);
+      }
+      return sum;
+    }, 0);
     
     const targetCalories = userProfile?.targetCalories || 2000;
-    const caloriePercent = Math.round((todayCalories / targetCalories) * 100);
+    const caloriePercent = targetCalories > 0 ? Math.min(Math.round((todayCalories / targetCalories) * 100), 100) : 0;
+
+    // Group today's entries by meal type
+    const mealGroups = {};
+    todayEntries.forEach(e => {
+      const meal = e.mealType || 'other';
+      if (!mealGroups[meal]) mealGroups[meal] = [];
+      mealGroups[meal].push(e);
+    });
+
+    const mealOrder = ['breakfast', 'lunch', 'dinner', 'snack', 'other'];
+    const mealIcons = { breakfast: '🌅', lunch: '☀️', dinner: '🌙', snack: '🍪', other: '🍽️' };
 
     return (
       <div>
@@ -69,7 +107,7 @@ const Dashboard = () => {
               <span className="stat-card-title">Protein</span>
               <span className="stat-card-icon">💪</span>
             </div>
-            <div className="stat-card-value">{Math.round(todayProtein)}g</div>
+            <div className="stat-card-value">{todayProtein}g</div>
             <div className="stat-card-label">Today</div>
           </div>
 
@@ -84,12 +122,64 @@ const Dashboard = () => {
 
           <div className="stat-card">
             <div className="stat-card-header">
-              <span className="stat-card-title">Tests</span>
-              <span className="stat-card-icon">🩺</span>
+              <span className="stat-card-title">Meals</span>
+              <span className="stat-card-icon">🍽️</span>
             </div>
-            <div className="stat-card-value">{testReports?.length || 0}</div>
-            <div className="stat-card-label">Reports</div>
+            <div className="stat-card-value">{todayEntries.length}</div>
+            <div className="stat-card-label">Today</div>
           </div>
+        </div>
+
+        {/* Calorie Progress Bar */}
+        <div className="overview-progress-section">
+          <div className="overview-progress-header">
+            <span>Daily Calorie Progress</span>
+            <span className="overview-progress-pct">{caloriePercent}%</span>
+          </div>
+          <div className="overview-progress-track">
+            <div className="overview-progress-fill" style={{ width: `${caloriePercent}%` }}></div>
+          </div>
+          <div className="overview-macro-row">
+            <span>🥩 P: {todayProtein}g</span>
+            <span>🌾 C: {todayCarbs}g</span>
+            <span>🫒 F: {todayFat}g</span>
+          </div>
+        </div>
+
+        {/* Today's Meals */}
+        <div className="overview-meals">
+          <h3>Today's Meals</h3>
+          {todayEntries.length === 0 ? (
+            <div className="overview-empty">
+              <p>No meals logged today</p>
+              <button className="action-btn" onClick={() => handleTabChange('diet')}>
+                <span className="action-btn-icon">➕</span>
+                <span>Add First Meal</span>
+              </button>
+            </div>
+          ) : (
+            <div className="overview-meal-list">
+              {mealOrder.map(meal => {
+                const entries = mealGroups[meal];
+                if (!entries || entries.length === 0) return null;
+                return (
+                  <div key={meal} className="overview-meal-group">
+                    <div className="overview-meal-title">
+                      {mealIcons[meal]} {meal.charAt(0).toUpperCase() + meal.slice(1)}
+                    </div>
+                    {entries.map(entry => (
+                      <div key={entry.id} className="overview-meal-item">
+                        <span className="overview-meal-name">{entry.foodName}</span>
+                        <span className="overview-meal-cal">
+                          {Math.round((entry.nutrition?.calories || 0) * (entry.quantity || 100) / 100)} cal
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
 
         {/* Quick Actions */}

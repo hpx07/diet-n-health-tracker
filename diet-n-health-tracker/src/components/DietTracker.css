@@ -108,6 +108,9 @@
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
+  max-width: 100%; /* Prevent overflow */
+  overflow-x: auto; /* Allow horizontal scroll on very narrow screens */
+  padding-bottom: 2px; /* Space for scrollbar */
 }
 
 .category-btn {
@@ -145,7 +148,11 @@
   margin-bottom: 8px;
 }
 
-.search-input-wrapper { flex: 1; position: relative; }
+.search-input-wrapper { 
+  flex: 1; 
+  position: relative;
+  min-width: 0; /* Prevent flex item overflow */
+}
 
 .search-input {
   padding: 8px 10px;
@@ -154,6 +161,7 @@
   font-size: 13px;
   font-family: var(--font);
   width: 100%;
+  box-sizing: border-box; /* Ensure padding doesn't cause overflow */
 }
 
 .search-input:focus { border-color: var(--c-primary); }
@@ -161,15 +169,19 @@
 .suggestions-dropdown {
   position: absolute;
   top: 100%;
-  left: 0; right: 0;
+  left: 0; 
+  right: 0;
   background: var(--c-surface);
   border: 1.5px solid var(--c-primary);
   border-top: none;
   border-radius: 0 0 var(--radius-sm) var(--radius-sm);
   max-height: 160px;
   overflow-y: auto;
+  overflow-x: hidden; /* Prevent horizontal scroll */
   z-index: 1000;
   box-shadow: 0 4px 12px rgba(0,0,0,.12);
+  /* Ensure dropdown doesn't exceed viewport */
+  max-width: calc(100vw - 32px);
 }
 
 .suggestion-item {
@@ -200,7 +212,24 @@
 .search-results {
   max-height: 220px;
   overflow-y: auto;
+  overflow-x: hidden; /* Prevent horizontal scroll */
   margin-bottom: 10px;
+  /* Add scrollbar styling for mobile */
+  scrollbar-width: thin;
+  scrollbar-color: var(--c-border) transparent;
+}
+
+.search-results::-webkit-scrollbar {
+  width: 4px;
+}
+
+.search-results::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.search-results::-webkit-scrollbar-thumb {
+  background: var(--c-border);
+  border-radius: 4px;
 }
 
 .food-item {
@@ -211,6 +240,8 @@
   margin-bottom: 6px;
   cursor: pointer;
   transition: border-color .15s;
+  word-wrap: break-word; /* Prevent text overflow */
+  overflow-wrap: break-word;
 }
 .food-item:hover { border-color: var(--c-primary); }
 .food-item.selected { border-color: var(--c-primary); background: var(--c-primary-l); }
@@ -303,12 +334,33 @@
   border-radius: var(--radius-sm);
   margin-bottom: 5px;
   box-shadow: var(--shadow-xs);
+  min-width: 0; /* Prevent flex item overflow */
 }
 
-.entry-info { flex: 1; min-width: 0; }
-.entry-name { font-size: 13px; font-weight: 600; color: var(--c-text); }
-.entry-brand { font-size: 11px; color: var(--c-text-3); }
-.entry-quantity { font-size: 11px; color: var(--c-text-2); }
+.entry-info { 
+  flex: 1; 
+  min-width: 0; 
+  overflow: hidden; /* Prevent text overflow */
+}
+.entry-name { 
+  font-size: 13px; 
+  font-weight: 600; 
+  color: var(--c-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.entry-brand { 
+  font-size: 11px; 
+  color: var(--c-text-3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.entry-quantity { 
+  font-size: 11px; 
+  color: var(--c-text-2);
+}
 
 .entry-nutrition {
   display: flex;

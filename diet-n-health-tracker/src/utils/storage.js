@@ -42,7 +42,7 @@ export const storageService = {
       const index = existingData.findIndex(item => item.id === data.id);
       
       if (index !== -1) {
-        existingData[index] = data;
+        existingData[index] = { ...existingData[index], ...data }; // Merge instead of replace
       } else {
         existingData.push(data);
       }
@@ -50,6 +50,7 @@ export const storageService = {
       localStorage.setItem(table, JSON.stringify(existingData));
     } catch (error) {
       console.error('Error saving to localStorage:', error);
+      throw error;
     }
   },
 

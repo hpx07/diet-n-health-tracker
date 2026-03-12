@@ -2,13 +2,15 @@
 
 .login-container {
   min-height: 100vh;
-  min-height: calc(100vh - var(--sat) - var(--sab));
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   background: linear-gradient(160deg, var(--c-primary-d) 0%, var(--c-primary) 55%, #0E7490 100%);
   padding: 16px;
+  /* Ensure proper viewport handling */
+  box-sizing: border-box;
+  overflow-x: hidden;
 }
 
 .login-brand {
@@ -43,6 +45,9 @@
   width: 100%;
   max-width: 360px;
   box-shadow: 0 12px 40px rgba(0,0,0,.22);
+  /* Ensure card doesn't exceed viewport */
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .login-card-title {

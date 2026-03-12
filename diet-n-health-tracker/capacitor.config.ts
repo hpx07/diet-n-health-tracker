@@ -22,9 +22,9 @@ const config: CapacitorConfig = {
     }
   },
   android: {
-    allowMixedContent: true,
+    allowMixedContent: false, // Security: Don't allow HTTP on HTTPS
     captureInput: true,
-    webContentsDebuggingEnabled: true
+    webContentsDebuggingEnabled: false // Security: Disable debugging in production
   }
 };
 

@@ -24,6 +24,11 @@ class MobileNotificationService {
       // Request permissions for local notifications
       const localPermission = await LocalNotifications.requestPermissions();
       console.log('Local notification permission:', localPermission.display);
+      
+      if (localPermission.display === 'denied') {
+        console.warn('Local notifications permission denied');
+        return false;
+      }
 
       // Listen for notification actions
       await LocalNotifications.addListener('localNotificationActionPerformed', (notification) => {
@@ -32,48 +37,72 @@ class MobileNotificationService {
 
       // Skip push notifications for now - they require Firebase setup
       console.log('Push notifications skipped (requires Firebase configuration)');
+      return true;
 
     } catch (error) {
       console.error('Error initializing native notifications:', error);
       // Don't throw - allow app to continue
+      return false;
     }
   }
 
   async initializeWebNotifications() {
-    if ('Notification' in window && Notification.permission === 'default') {
-      await Notification.requestPermission();
+    try {
+      if ('Notification' in window) {
+        if (Notification.permission === 'default') {
+          const permission = await Notification.requestPermission();
+          return permission === 'granted';
+        }
+        return Notification.permission === 'granted';
+      }
+      return false;
+    } catch (error) {
+      console.error('Error initializing web notifications:', error);
+      return false;
     }
   }
 
   async sendNotification(title, body, options = {}) {
     try {
       if (this.isNative) {
+        // Check if we have permission before sending
+        const permission = await LocalNotifications.checkPermissions();
+        if (permission.display !== 'granted') {
+          console.warn('Local notifications not permitted');
+          return false;
+        }
+
         await LocalNotifications.schedule({
-          notifications: [
-            {
-              title,
-              body,
-              id: Date.now(),
-              schedule: { at: new Date(Date.now() + 1000) }, // 1 second from now
-              sound: 'default',
-              smallIcon: 'ic_stat_icon_config_sample',
-              iconColor: '#4CAF50',
-              ...options
-            }
-          ]
-        });
-      } else {
-        if ('Notification' in window && Notification.permission === 'granted') {
-          new Notification(title, {
+          notifications: [{
+            title,
             body,
+            id: Date.now(),
+            schedule: { at: new Date(Date.now() + 1000) }, // 1 second delay
+            sound: 'default',
+            smallIcon: 'ic_stat_icon_config_sample',
+            iconColor: '#4CAF50',
+            ...options
+          }]
+        });
+        return true;
+      } else {
+        // Web notifications
+        if (Notification.permission === 'granted') {
+          new Notification(title, { 
+            body, 
             icon: '/logo192.png',
             badge: '/logo192.png',
-            ...options
+            ...options 
           });
+          return true;
+        } else {
+          console.warn('Web notifications not permitted');
+          return false;
         }
       }
     } catch (error) {
       console.error('Error sending notification:', error);
+      return false;
     }
   }
 

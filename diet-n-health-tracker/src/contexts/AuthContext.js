@@ -42,16 +42,36 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const loginWithGoogle = (credential) => {
-    // Decode JWT token to get user info
-    const payload = JSON.parse(atob(credential.split('.')[1]));
-    const userEmail = payload.email;
-    const userName = payload.name;
-    const deviceId = getDeviceId();
+    try {
+      // Validate JWT token format
+      if (!credential || typeof credential !== 'string') {
+        throw new Error('Invalid credential format');
+      }
 
-    localStorage.setItem('userEmail', userEmail);
-    localStorage.setItem('userName', userName);
+      const parts = credential.split('.');
+      if (parts.length !== 3) {
+        throw new Error('Invalid JWT token structure');
+      }
 
-    setUser({ email: userEmail, name: userName, deviceId });
+      // Decode JWT token to get user info with error handling
+      const payload = JSON.parse(atob(parts[1]));
+      
+      if (!payload.email || !payload.name) {
+        throw new Error('Missing required user information in token');
+      }
+
+      const userEmail = payload.email;
+      const userName = payload.name;
+      const deviceId = getDeviceId();
+
+      localStorage.setItem('userEmail', userEmail);
+      localStorage.setItem('userName', userName);
+
+      setUser({ email: userEmail, name: userName, deviceId });
+    } catch (error) {
+      console.error('Error processing Google login:', error);
+      throw new Error('Failed to process login credentials');
+    }
   };
 
   const logout = () => {
