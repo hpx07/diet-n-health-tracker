@@ -53,6 +53,7 @@ const UserProfile = () => {
               name="name"
               value={formData.name}
               onChange={handleChange}
+              placeholder="Your name"
               required
             />
           </div>
@@ -64,6 +65,7 @@ const UserProfile = () => {
               name="age"
               value={formData.age}
               onChange={handleChange}
+              placeholder="Years"
               required
               min="1"
               max="120"
@@ -85,6 +87,7 @@ const UserProfile = () => {
               name="height"
               value={formData.height}
               onChange={handleChange}
+              placeholder="cm"
               required
               min="50"
               max="300"
@@ -98,6 +101,7 @@ const UserProfile = () => {
               name="weight"
               value={formData.weight}
               onChange={handleChange}
+              placeholder="kg"
               required
               min="20"
               max="300"
@@ -108,11 +112,11 @@ const UserProfile = () => {
           <div className="form-group">
             <label>Activity Level</label>
             <select name="activityLevel" value={formData.activityLevel} onChange={handleChange}>
-              <option value="sedentary">Sedentary (little or no exercise)</option>
-              <option value="light">Light (exercise 1-3 days/week)</option>
-              <option value="moderate">Moderate (exercise 3-5 days/week)</option>
-              <option value="active">Active (exercise 6-7 days/week)</option>
-              <option value="veryActive">Very Active (intense exercise daily)</option>
+              <option value="sedentary">Sedentary</option>
+              <option value="light">Light (1-3 days/wk)</option>
+              <option value="moderate">Moderate (3-5 days/wk)</option>
+              <option value="active">Active (6-7 days/wk)</option>
+              <option value="veryActive">Very Active (daily)</option>
             </select>
           </div>
 

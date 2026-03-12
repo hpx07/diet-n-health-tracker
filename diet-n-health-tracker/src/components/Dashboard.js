@@ -155,18 +155,33 @@ const Dashboard = () => {
     <div className="dashboard">
       <header className="dashboard-header">
         <div className="header-content">
-          <h1>
-            Diet-N-Health
-            <span className="version-badge">{APP_VERSION.getVersionString()}</span>
-          </h1>
+          {/* Brand */}
+          <div className="header-brand">
+            <div className="header-logo">🫀</div>
+            <div className="header-title-group">
+              <h1>
+                Diet-N-Health
+                <span className="version-badge">{APP_VERSION.getVersionString()}</span>
+              </h1>
+              <span className="header-tagline">Track · Monitor · Achieve</span>
+            </div>
+          </div>
+
+          {/* User */}
           <div className="user-info">
             {isAuthenticated ? (
               <>
-                <span>{user.name}</span>
+                <div className="user-chip">
+                  <div className="user-avatar">👤</div>
+                  <span className="user-name">{user.name}</span>
+                </div>
                 <button onClick={handleLogout} className="logout-btn">Logout</button>
               </>
             ) : (
-              <span>Guest</span>
+              <div className="user-chip">
+                <div className="user-avatar">👤</div>
+                <span className="user-name">Guest</span>
+              </div>
             )}
           </div>
         </div>
