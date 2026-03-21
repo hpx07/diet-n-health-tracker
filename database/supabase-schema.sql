@@ -14,6 +14,11 @@ CREATE TABLE IF NOT EXISTS user_profile (
     goal TEXT NOT NULL CHECK(goal IN ('lose', 'maintain', 'gain')),
     timestamp TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     synced BOOLEAN DEFAULT FALSE,
+    "ipAddress" TEXT,
+    "deviceInfo" JSONB,
+    "createdIP" TEXT,
+    "createdDevice" JSONB,
+    "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     UNIQUE("userId")
 );
 
@@ -30,7 +35,12 @@ CREATE TABLE IF NOT EXISTS diet_entries (
     quantity DECIMAL(8,2) NOT NULL,
     nutrition JSONB NOT NULL,
     timestamp TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
-    synced BOOLEAN DEFAULT FALSE
+    synced BOOLEAN DEFAULT FALSE,
+    "ipAddress" TEXT,
+    "deviceInfo" JSONB,
+    "createdIP" TEXT,
+    "createdDevice" JSONB,
+    "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
 CREATE INDEX IF NOT EXISTS idx_diet_entries_user_date ON diet_entries("userId", date);
@@ -50,7 +60,12 @@ CREATE TABLE IF NOT EXISTS test_reports (
     message TEXT NOT NULL,
     "normalRange" JSONB,
     timestamp TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
-    synced BOOLEAN DEFAULT FALSE
+    synced BOOLEAN DEFAULT FALSE,
+    "ipAddress" TEXT,
+    "deviceInfo" JSONB,
+    "createdIP" TEXT,
+    "createdDevice" JSONB,
+    "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
 CREATE INDEX IF NOT EXISTS idx_test_reports_user_date ON test_reports("userId", date);
@@ -72,7 +87,11 @@ CREATE TABLE IF NOT EXISTS health_goals (
     "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     "lastUpdated" TIMESTAMP WITH TIME ZONE,
     timestamp TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
-    synced BOOLEAN DEFAULT FALSE
+    synced BOOLEAN DEFAULT FALSE,
+    "ipAddress" TEXT,
+    "deviceInfo" JSONB,
+    "createdIP" TEXT,
+    "createdDevice" JSONB
 );
 
 CREATE INDEX IF NOT EXISTS idx_health_goals_userId ON health_goals("userId");
@@ -87,6 +106,10 @@ CREATE TABLE IF NOT EXISTS daily_checklists (
     "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     timestamp TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     synced BOOLEAN DEFAULT FALSE,
+    "ipAddress" TEXT,
+    "deviceInfo" JSONB,
+    "createdIP" TEXT,
+    "createdDevice" JSONB,
     UNIQUE("userId", date)
 );
 

@@ -14,6 +14,11 @@ CREATE TABLE IF NOT EXISTS user_profile (
     goal ENUM('lose', 'maintain', 'gain') NOT NULL,
     timestamp DATETIME NOT NULL,
     synced BOOLEAN DEFAULT FALSE,
+    ipAddress VARCHAR(45),
+    deviceInfo JSON,
+    createdIP VARCHAR(45),
+    createdDevice JSON,
+    createdAt DATETIME,
     UNIQUE KEY unique_user (userId),
     INDEX idx_userId (userId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -30,6 +35,11 @@ CREATE TABLE IF NOT EXISTS diet_entries (
     nutrition JSON NOT NULL,
     timestamp DATETIME NOT NULL,
     synced BOOLEAN DEFAULT FALSE,
+    ipAddress VARCHAR(45),
+    deviceInfo JSON,
+    createdIP VARCHAR(45),
+    createdDevice JSON,
+    createdAt DATETIME,
     INDEX idx_user_date (userId, date),
     INDEX idx_date (date)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -49,6 +59,11 @@ CREATE TABLE IF NOT EXISTS test_reports (
     normalRange JSON,
     timestamp DATETIME NOT NULL,
     synced BOOLEAN DEFAULT FALSE,
+    ipAddress VARCHAR(45),
+    deviceInfo JSON,
+    createdIP VARCHAR(45),
+    createdDevice JSON,
+    createdAt DATETIME,
     INDEX idx_user_date (userId, date),
     INDEX idx_testId (testId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -70,6 +85,10 @@ CREATE TABLE IF NOT EXISTS health_goals (
     lastUpdated DATETIME,
     timestamp DATETIME NOT NULL,
     synced BOOLEAN DEFAULT FALSE,
+    ipAddress VARCHAR(45),
+    deviceInfo JSON,
+    createdIP VARCHAR(45),
+    createdDevice JSON,
     INDEX idx_userId (userId),
     INDEX idx_completed (completed)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -83,6 +102,10 @@ CREATE TABLE IF NOT EXISTS daily_checklists (
     createdAt DATETIME NOT NULL,
     timestamp DATETIME NOT NULL,
     synced BOOLEAN DEFAULT FALSE,
+    ipAddress VARCHAR(45),
+    deviceInfo JSON,
+    createdIP VARCHAR(45),
+    createdDevice JSON,
     UNIQUE KEY unique_user_date (userId, date),
     INDEX idx_user_date (userId, date)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
