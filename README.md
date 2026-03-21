@@ -62,25 +62,6 @@ cd android && ./gradlew assembleRelease
 └── diet-n-health-tracker-v1.0.0.apk  # Ready-to-install APK
 ```
 
-## 🔧 Configuration
-
-### Environment Variables
-Copy `.env.example` to `.env` and configure:
-```bash
-# Optional: Google OAuth (for user authentication)
-REACT_APP_GOOGLE_CLIENT_ID=your-google-client-id
-
-# Optional: Supabase (for cloud sync)
-REACT_APP_SUPABASE_URL=your-supabase-url
-REACT_APP_SUPABASE_ANON_KEY=your-supabase-key
-```
-
-### Capacitor Configuration
-The app is configured in `capacitor.config.ts` with:
-- Local notifications support
-- Status bar styling
-- Splash screen configuration
-
 ## 📊 Usage
 
 1. **Setup Profile**: Complete your user profile for personalized recommendations
