@@ -1,10 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useApp } from '../contexts/AppContext';
+import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import { dietCalculator } from '../services/dietCalculator';
+import { storageService } from '../utils/storage';
+import { getDeviceId } from '../utils/deviceId';
 import './UserProfile.css';
 
 const UserProfile = () => {
   const { userProfile, saveUserProfile } = useApp();
+  const { user, isAuthenticated, logout } = useAuth();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: '',
     age: '',
@@ -15,12 +21,17 @@ const UserProfile = () => {
     goal: 'maintain'
   });
   const [dietPlan, setDietPlan] = useState(null);
+  const [lastSyncTime, setLastSyncTime] = useState(null);
 
   useEffect(() => {
     if (userProfile) {
       setFormData(userProfile);
       generateDietPlan(userProfile);
     }
+    
+    // Get last sync time
+    const syncTime = storageService.getLastSyncTime();
+    setLastSyncTime(syncTime);
   }, [userProfile]);
 
   const handleChange = (e) => {
@@ -71,9 +82,106 @@ const UserProfile = () => {
     }
   };
 
+  const formatDateTime = (isoString) => {
+    if (!isoString) return 'Never';
+    
+    try {
+      const date = new Date(isoString);
+      const now = new Date();
+      const diffMs = now - date;
+      const diffMins = Math.floor(diffMs / 60000);
+      const diffHours = Math.floor(diffMs / 3600000);
+      const diffDays = Math.floor(diffMs / 86400000);
+      
+      // Relative time
+      let relativeTime = '';
+      if (diffMins < 1) {
+        relativeTime = 'Just now';
+      } else if (diffMins < 60) {
+        relativeTime = `${diffMins} minute${diffMins > 1 ? 's' : ''} ago`;
+      } else if (diffHours < 24) {
+        relativeTime = `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+      } else if (diffDays < 7) {
+        relativeTime = `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+      } else {
+        relativeTime = date.toLocaleDateString();
+      }
+      
+      // Full date and time
+      const fullDateTime = date.toLocaleString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+      });
+      
+      return { relativeTime, fullDateTime };
+    } catch (error) {
+      return { relativeTime: 'Invalid date', fullDateTime: 'Invalid date' };
+    }
+  };
+
+  const getLoginStatus = () => {
+    if (isAuthenticated && user?.email) {
+      return {
+        status: 'Logged In',
+        statusClass: 'status-online',
+        icon: '✓'
+      };
+    } else {
+      return {
+        status: 'Guest Mode',
+        statusClass: 'status-guest',
+        icon: '👤'
+      };
+    }
+  };
+
+  const loginStatus = getLoginStatus();
+  const syncTimeFormatted = lastSyncTime ? formatDateTime(lastSyncTime) : null;
+
+  const handleLogout = () => {
+    const confirmMessage = isAuthenticated 
+      ? 'Are you sure you want to logout? Your local data will remain on this device.'
+      : 'Are you sure you want to continue as guest?';
+    
+    if (window.confirm(confirmMessage)) {
+      logout();
+      // Optionally navigate to dashboard or stay on profile
+      // navigate('/dashboard');
+    }
+  };
+
+  const getDisplayName = () => {
+    // Priority: 1. User Profile Name, 2. Gmail Name, 3. Gmail Email, 4. Guest User
+    if (userProfile?.name && userProfile.name.trim()) {
+      return userProfile.name;
+    } else if (user?.name) {
+      return user.name;
+    } else if (user?.email) {
+      return user.email;
+    } else {
+      return 'Guest User';
+    }
+  };
+
   return (
     <div className="user-profile">
-      <h2>User Profile</h2>
+      <div className="profile-header">
+        <div className="profile-header-content">
+          <h2>User Profile</h2>
+          <div className="profile-user-info">
+            <span className="profile-display-name">{getDisplayName()}</span>
+            {isAuthenticated && (
+              <button onClick={handleLogout} className="logout-btn-inline">
+                Logout
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
       
       <form onSubmit={handleSubmit} className="profile-form">
         <div className="form-grid">
@@ -163,6 +271,76 @@ const UserProfile = () => {
 
         <button type="submit" className="save-btn">Save Profile</button>
       </form>
+
+      {/* Login Info Section */}
+      <div className="login-info-section">
+        <div className="section-header-with-action">
+          <h3>Login Info</h3>
+          {isAuthenticated && (
+            <button onClick={handleLogout} className="logout-btn-section">
+              Logout
+            </button>
+          )}
+        </div>
+        
+        <div className="info-grid">
+          <div className="info-item">
+            <label>Status</label>
+            <div className={`status-badge ${loginStatus.statusClass}`}>
+              <span className="status-icon">{loginStatus.icon}</span>
+              <span className="status-text">{loginStatus.status}</span>
+            </div>
+          </div>
+
+          <div className="info-item">
+            <label>Account</label>
+            <div className="info-value">
+              {isAuthenticated && user?.email ? (
+                <span className="email-display">{user.email}</span>
+              ) : (
+                <span className="guest-text">Local Device Only</span>
+              )}
+            </div>
+          </div>
+
+          {isAuthenticated && user?.name && (
+            <div className="info-item">
+              <label>Name</label>
+              <div className="info-value">{user.name}</div>
+            </div>
+          )}
+
+          <div className="info-item">
+            <label>Device ID</label>
+            <div className="info-value device-id">
+              {getDeviceId().substring(0, 8)}...
+            </div>
+          </div>
+
+          <div className="info-item">
+            <label>Last Synced</label>
+            <div className="info-value">
+              {syncTimeFormatted ? (
+                <div className="sync-time">
+                  <span className="sync-relative">{syncTimeFormatted.relativeTime}</span>
+                  <span className="sync-full">{syncTimeFormatted.fullDateTime}</span>
+                </div>
+              ) : (
+                <span className="sync-never">Never synced</span>
+              )}
+            </div>
+          </div>
+
+          <div className="info-item">
+            <label>Storage</label>
+            <div className="info-value">
+              <span className="storage-type">
+                {isAuthenticated ? '☁️ Cloud + Local' : '💾 Local Only'}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
 
       {dietPlan && (
         <div className="diet-plan">

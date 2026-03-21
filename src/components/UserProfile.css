@@ -2,11 +2,67 @@
 
 .user-profile { width: 100%; }
 
+/* Profile Header */
+.profile-header {
+  margin-bottom: 10px;
+}
+
+.profile-header-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
 .user-profile h2 {
   font-size: 16px;
   font-weight: 700;
   color: var(--c-text);
-  margin-bottom: 10px;
+  margin: 0;
+}
+
+.profile-user-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  background: var(--c-surface);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--c-border);
+}
+
+.profile-display-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--c-primary);
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.logout-btn-inline {
+  padding: 6px 14px;
+  background: #ef4444;
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: var(--font);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.logout-btn-inline:hover {
+  background: #dc2626;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);
+}
+
+.logout-btn-inline:active {
+  transform: translateY(0);
 }
 
 /* Profile form */
@@ -199,4 +255,169 @@
 @media (min-width: 480px) {
   .form-grid { grid-template-columns: repeat(2, 1fr); }
   .metrics-grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+/* Login Info Section */
+.login-info-section {
+  background: var(--c-surface);
+  border-radius: var(--radius);
+  padding: 12px;
+  margin-top: 10px;
+  box-shadow: var(--shadow-xs);
+}
+
+.section-header-with-action {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.login-info-section h3 {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--c-text);
+  margin: 0;
+}
+
+.logout-btn-section {
+  padding: 6px 14px;
+  background: #ef4444;
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: var(--font);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.logout-btn-section:hover {
+  background: #dc2626;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);
+}
+
+.logout-btn-section:active {
+  transform: translateY(0);
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.info-item label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--c-text-2);
+  text-transform: uppercase;
+  letter-spacing: .3px;
+}
+
+.info-value {
+  font-size: 13px;
+  color: var(--c-text);
+  padding: 8px;
+  background: var(--c-bg);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--c-border);
+}
+
+/* Status Badge */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 600;
+  width: fit-content;
+}
+
+.status-badge.status-online {
+  background: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.status-badge.status-guest {
+  background: rgba(107, 114, 128, 0.1);
+  color: #6b7280;
+  border: 1px solid rgba(107, 114, 128, 0.3);
+}
+
+.status-icon {
+  font-size: 14px;
+}
+
+.status-text {
+  font-weight: 600;
+}
+
+/* Email Display */
+.email-display {
+  color: var(--c-primary);
+  font-weight: 500;
+  word-break: break-all;
+}
+
+.guest-text {
+  color: var(--c-text-3);
+  font-style: italic;
+}
+
+/* Device ID */
+.device-id {
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  color: var(--c-text-3);
+}
+
+/* Sync Time */
+.sync-time {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sync-relative {
+  font-weight: 600;
+  color: var(--c-primary);
+}
+
+.sync-full {
+  font-size: 11px;
+  color: var(--c-text-3);
+}
+
+.sync-never {
+  color: var(--c-text-3);
+  font-style: italic;
+}
+
+/* Storage Type */
+.storage-type {
+  font-weight: 500;
+}
+
+@media (min-width: 480px) {
+  .info-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 768px) {
+  .info-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
