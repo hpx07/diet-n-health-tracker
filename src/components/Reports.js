@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useApp } from '../contexts/AppContext';
-import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { format, subDays } from 'date-fns';
 import './Reports.css';
 
@@ -8,6 +7,14 @@ const Reports = () => {
   const { userProfile, dietEntries, testReports, healthGoals } = useApp();
   const [reportType, setReportType] = useState('nutrition');
   const [dateRange, setDateRange] = useState(7);
+
+  // Debug logging
+  console.log('📊 Reports - Data loaded:', {
+    dietEntries: dietEntries?.length || 0,
+    testReports: testReports?.length || 0,
+    healthGoals: healthGoals?.length || 0,
+    userProfile: userProfile ? 'Yes' : 'No'
+  });
 
   const getDateRangeData = () => {
     const endDate = new Date();
@@ -19,11 +26,13 @@ const Reports = () => {
     const { endDate } = getDateRangeData();
     const dateMap = new Map();
 
+    // Create date range
     for (let i = 0; i < dateRange; i++) {
       const date = format(subDays(endDate, i), 'yyyy-MM-dd');
       dateMap.set(date, { date, calories: 0, protein: 0, carbs: 0, fat: 0 });
     }
 
+    // Fill with actual data
     if (dietEntries && dietEntries.length > 0) {
       dietEntries.forEach(entry => {
         if (entry.date && dateMap.has(entry.date)) {
@@ -40,16 +49,19 @@ const Reports = () => {
       });
     }
 
-    return Array.from(dateMap.values())
+    const result = Array.from(dateMap.values())
       .sort((a, b) => new Date(a.date) - new Date(b.date))
       .map(d => ({
         ...d,
-        date: format(new Date(d.date), 'MMM dd'),
+        displayDate: format(new Date(d.date), 'MMM dd'),
         calories: Math.round(d.calories),
         protein: Math.round(d.protein),
         carbs: Math.round(d.carbs),
         fat: Math.round(d.fat)
       }));
+
+    console.log('📊 Nutrition data:', result);
+    return result;
   };
 
   const getMacroDistribution = () => {
@@ -67,11 +79,14 @@ const Reports = () => {
       }, { protein: 0, carbs: 0, fat: 0 });
     }
 
-    return [
+    const result = [
       { name: 'Protein', value: Math.round(totals.protein), color: '#0D9488' },
       { name: 'Carbs', value: Math.round(totals.carbs), color: '#10B981' },
       { name: 'Fat', value: Math.round(totals.fat), color: '#F59E0B' }
     ];
+
+    console.log('📊 Macro data:', result);
+    return result;
   };
 
   const getTestTrends = () => {
@@ -105,13 +120,210 @@ const Reports = () => {
     return [];
   };
 
-  // Get the data
   const nutritionData = getNutritionData();
   const macroData = getMacroDistribution();
   const testTrends = getTestTrends();
   const goalsData = getGoalsProgress();
   const hasNutritionData = nutritionData.some(d => d.calories > 0);
   const hasMacroData = macroData.some(m => m.value > 0);
+
+  // Simple line graph component for single metric
+  const LineGraph = ({ data, dataKey, label, color = '#0D9488' }) => {
+    const maxValue = Math.max(...data.map(d => d[dataKey]), 1);
+    const minValue = Math.min(...data.map(d => d[dataKey]), 0);
+    const range = maxValue - minValue || 1;
+    
+    // Calculate points for the line
+    const points = data.map((item, index) => {
+      const x = (index / (data.length - 1)) * 100;
+      const y = 100 - ((item[dataKey] - minValue) / range) * 100;
+      return { x, y, value: item[dataKey], date: item.displayDate || item.date };
+    });
+
+    // Create SVG path
+    const pathData = points.map((point, index) => 
+      `${index === 0 ? 'M' : 'L'} ${point.x} ${point.y}`
+    ).join(' ');
+
+    return (
+      <div className="line-graph">
+        <div className="line-graph-container">
+          <svg className="line-graph-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+            {/* Grid lines */}
+            <line x1="0" y1="25" x2="100" y2="25" stroke="var(--c-border)" strokeWidth="0.2" opacity="0.5" />
+            <line x1="0" y1="50" x2="100" y2="50" stroke="var(--c-border)" strokeWidth="0.2" opacity="0.5" />
+            <line x1="0" y1="75" x2="100" y2="75" stroke="var(--c-border)" strokeWidth="0.2" opacity="0.5" />
+            
+            {/* Area under the line */}
+            <path
+              d={`${pathData} L 100 100 L 0 100 Z`}
+              fill={color}
+              opacity="0.1"
+            />
+            
+            {/* The line */}
+            <path
+              d={pathData}
+              fill="none"
+              stroke={color}
+              strokeWidth="1"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+          
+          {/* Data points */}
+          <div className="line-graph-points">
+            {points.map((point, index) => (
+              <div
+                key={index}
+                className="line-graph-point"
+                style={{
+                  left: `${point.x}%`,
+                  top: `${point.y}%`,
+                  backgroundColor: color
+                }}
+                title={`${point.date}: ${point.value} ${label}`}
+              >
+                <span className="point-value">{point.value}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+        
+        {/* X-axis labels */}
+        <div className="line-graph-labels">
+          {data.map((item, index) => (
+            <div key={index} className="line-graph-label">
+              {item.displayDate || item.date}
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
+  // Multi-line graph component for multiple metrics
+  const MultiLineGraph = ({ data, lines }) => {
+    const allValues = data.flatMap(d => lines.map(line => d[line.key]));
+    const maxValue = Math.max(...allValues, 1);
+    const minValue = Math.min(...allValues, 0);
+    const range = maxValue - minValue || 1;
+
+    // Calculate points for each line
+    const linesPaths = lines.map(line => {
+      const points = data.map((item, index) => {
+        const x = (index / (data.length - 1)) * 100;
+        const y = 100 - ((item[line.key] - minValue) / range) * 100;
+        return { x, y, value: item[line.key], date: item.displayDate };
+      });
+
+      const pathData = points.map((point, index) => 
+        `${index === 0 ? 'M' : 'L'} ${point.x} ${point.y}`
+      ).join(' ');
+
+      return { ...line, points, pathData };
+    });
+
+    return (
+      <div className="multi-line-graph">
+        <div className="line-graph-container">
+          <svg className="line-graph-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+            {/* Grid lines */}
+            <line x1="0" y1="25" x2="100" y2="25" stroke="var(--c-border)" strokeWidth="0.2" opacity="0.5" />
+            <line x1="0" y1="50" x2="100" y2="50" stroke="var(--c-border)" strokeWidth="0.2" opacity="0.5" />
+            <line x1="0" y1="75" x2="100" y2="75" stroke="var(--c-border)" strokeWidth="0.2" opacity="0.5" />
+            
+            {/* Draw all lines */}
+            {linesPaths.map((line, index) => (
+              <g key={index}>
+                {/* Area under the line */}
+                <path
+                  d={`${line.pathData} L 100 100 L 0 100 Z`}
+                  fill={line.color}
+                  opacity="0.05"
+                />
+                {/* The line */}
+                <path
+                  d={line.pathData}
+                  fill="none"
+                  stroke={line.color}
+                  strokeWidth="1"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </g>
+            ))}
+          </svg>
+          
+          {/* Data points for all lines */}
+          {linesPaths.map((line, lineIndex) => (
+            <div key={lineIndex} className="line-graph-points">
+              {line.points.map((point, index) => (
+                <div
+                  key={`${lineIndex}-${index}`}
+                  className="line-graph-point"
+                  style={{
+                    left: `${point.x}%`,
+                    top: `${point.y}%`,
+                    backgroundColor: line.color,
+                    zIndex: lineIndex + 1
+                  }}
+                  title={`${point.date}: ${line.label} ${point.value}g`}
+                />
+              ))}
+            </div>
+          ))}
+        </div>
+        
+        {/* X-axis labels */}
+        <div className="line-graph-labels">
+          {data.map((item, index) => (
+            <div key={index} className="line-graph-label">
+              {item.displayDate}
+            </div>
+          ))}
+        </div>
+        
+        {/* Legend */}
+        <div className="line-graph-legend">
+          {lines.map((line, index) => (
+            <div key={index} className="legend-item">
+              <span className="legend-color" style={{ backgroundColor: line.color }} />
+              <span className="legend-label">{line.label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
+  // Simple pie chart component
+  const PieChart = ({ data }) => {
+    const total = data.reduce((sum, item) => sum + item.value, 0);
+    
+    return (
+      <div className="simple-pie-chart">
+        <div className="pie-chart-bars">
+          {data.map((item, index) => (
+            <div key={index} className="pie-bar">
+              <div className="pie-bar-label">{item.name}</div>
+              <div className="pie-bar-track">
+                <div
+                  className="pie-bar-fill"
+                  style={{
+                    width: `${(item.value / total) * 100}%`,
+                    backgroundColor: item.color
+                  }}
+                />
+              </div>
+              <div className="pie-bar-value">{item.value}g ({((item.value / total) * 100).toFixed(0)}%)</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
 
   const generateCustomReport = () => {
     try {
@@ -187,13 +399,6 @@ const Reports = () => {
     URL.revokeObjectURL(url);
   };
 
-  const tooltipStyle = {
-    backgroundColor: '#fff',
-    border: '1px solid #E2E8F0',
-    borderRadius: '8px',
-    fontSize: '12px'
-  };
-
   return (
     <div className="reports">
       <div className="reports-header">
@@ -231,72 +436,37 @@ const Reports = () => {
               <div className="no-data-icon">📊</div>
               <h4>No Nutrition Data</h4>
               <p>Add diet entries to see your calorie and macro trends here.</p>
+              <button 
+                onClick={() => window.location.href = '/diet-tracker'} 
+                className="add-data-btn"
+              >
+                Go to Diet Tracker
+              </button>
             </div>
           ) : (
             <>
               <h3>Calorie Intake Trend</h3>
-              <div className="chart-container" style={{ height: '220px', minHeight: '220px' }}>
-                <ResponsiveContainer width="99%" height="100%">
-                  <LineChart data={nutritionData} margin={{ top: 5, right: 10, left: -15, bottom: 5 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" />
-                    <XAxis dataKey="date" tick={{ fontSize: 10 }} interval="preserveStartEnd" />
-                    <YAxis tick={{ fontSize: 10 }} />
-                    <Tooltip contentStyle={tooltipStyle} />
-                    <Line
-                      type="monotone"
-                      dataKey="calories"
-                      stroke="#0D9488"
-                      strokeWidth={2}
-                      dot={{ fill: '#0D9488', strokeWidth: 2, r: 3 }}
-                      activeDot={{ r: 5 }}
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
+              <LineGraph 
+                data={nutritionData} 
+                dataKey="calories" 
+                label="cal"
+                color="#0D9488"
+              />
 
               <h3>Macronutrients Trend</h3>
-              <div className="chart-container" style={{ height: '220px', minHeight: '220px' }}>
-                <ResponsiveContainer width="99%" height="100%">
-                  <LineChart data={nutritionData} margin={{ top: 5, right: 10, left: -15, bottom: 5 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" />
-                    <XAxis dataKey="date" tick={{ fontSize: 10 }} interval="preserveStartEnd" />
-                    <YAxis tick={{ fontSize: 10 }} />
-                    <Tooltip contentStyle={tooltipStyle} />
-                    <Legend wrapperStyle={{ fontSize: '11px' }} />
-                    <Line type="monotone" dataKey="protein" stroke="#0D9488" strokeWidth={2} dot={{ fill: '#0D9488', r: 2 }} />
-                    <Line type="monotone" dataKey="carbs" stroke="#10B981" strokeWidth={2} dot={{ fill: '#10B981', r: 2 }} />
-                    <Line type="monotone" dataKey="fat" stroke="#F59E0B" strokeWidth={2} dot={{ fill: '#F59E0B', r: 2 }} />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
+              <MultiLineGraph 
+                data={nutritionData}
+                lines={[
+                  { key: 'protein', label: 'Protein', color: '#0D9488' },
+                  { key: 'carbs', label: 'Carbs', color: '#10B981' },
+                  { key: 'fat', label: 'Fat', color: '#F59E0B' }
+                ]}
+              />
 
               {hasMacroData && (
                 <>
                   <h3>Macro Distribution</h3>
-                  <div className="chart-container" style={{ height: '220px', minHeight: '220px' }}>
-                    <ResponsiveContainer width="99%" height="100%">
-                      <PieChart>
-                        <Pie
-                          data={macroData}
-                          cx="50%"
-                          cy="50%"
-                          labelLine={false}
-                          label={({ name, value, percent }) => `${name}: ${value}g`}
-                          outerRadius={70}
-                          fill="#8884d8"
-                          dataKey="value"
-                        >
-                          {macroData.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={entry.color} />
-                          ))}
-                        </Pie>
-                        <Tooltip
-                          formatter={(value, name) => [`${value}g`, name]}
-                          contentStyle={tooltipStyle}
-                        />
-                      </PieChart>
-                    </ResponsiveContainer>
-                  </div>
+                  <PieChart data={macroData} />
                 </>
               )}
             </>
@@ -311,28 +481,24 @@ const Reports = () => {
               <div className="no-data-icon">🩺</div>
               <h4>No Test Data</h4>
               <p>Add test reports to see trends and analytics here.</p>
+              <button 
+                onClick={() => window.location.href = '/test-reports'} 
+                className="add-data-btn"
+              >
+                Go to Test Reports
+              </button>
             </div>
           ) : (
             Array.from(testTrends.entries()).map(([testName, data]) => (
               <div key={testName} className="test-chart">
                 <h3>{testName}</h3>
-                <div className="chart-container" style={{ height: '200px', minHeight: '200px' }}>
-                  <ResponsiveContainer width="99%" height="100%">
-                    <LineChart data={data} margin={{ top: 5, right: 10, left: -15, bottom: 5 }}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" />
-                      <XAxis dataKey="date" tick={{ fontSize: 10 }} />
-                      <YAxis tick={{ fontSize: 10 }} />
-                      <Tooltip contentStyle={tooltipStyle} />
-                      <Line
-                        type="monotone"
-                        dataKey="value"
-                        stroke="#0D9488"
-                        strokeWidth={2}
-                        dot={{ fill: '#0D9488', strokeWidth: 2, r: 3 }}
-                        activeDot={{ r: 5 }}
-                      />
-                    </LineChart>
-                  </ResponsiveContainer>
+                <div className="test-values">
+                  {data.map((point, index) => (
+                    <div key={index} className="test-value-item">
+                      <span className="test-date">{point.date}</span>
+                      <span className={`test-value status-${point.status}`}>{point.value}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
             ))
@@ -348,33 +514,32 @@ const Reports = () => {
               <div className="no-data-icon">🎯</div>
               <h4>No Goals Set</h4>
               <p>Create health goals to track your progress here.</p>
+              <button 
+                onClick={() => window.location.href = '/health-goals'} 
+                className="add-data-btn"
+              >
+                Go to Health Goals
+              </button>
             </div>
           ) : (
-            <div className="chart-container" style={{ height: '280px', minHeight: '280px' }}>
-              <ResponsiveContainer width="99%" height="100%">
-                <BarChart data={goalsData} margin={{ top: 10, right: 10, left: -15, bottom: 40 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" />
-                  <XAxis
-                    dataKey="name"
-                    tick={{ fontSize: 10 }}
-                    interval={0}
-                    angle={-30}
-                    textAnchor="end"
-                    height={60}
-                  />
-                  <YAxis tick={{ fontSize: 10 }} domain={[0, 100]} />
-                  <Tooltip
-                    formatter={(value) => [`${value}%`, 'Progress']}
-                    contentStyle={tooltipStyle}
-                  />
-                  <Bar
-                    dataKey="progress"
-                    fill="#0D9488"
-                    name="Progress %"
-                    radius={[4, 4, 0, 0]}
-                  />
-                </BarChart>
-              </ResponsiveContainer>
+            <div className="goals-list">
+              {goalsData.map((goal, index) => (
+                <div key={index} className="goal-item">
+                  <div className="goal-header">
+                    <span className="goal-name">{goal.name}</span>
+                    <span className="goal-progress">{goal.progress}%</span>
+                  </div>
+                  <div className="goal-bar">
+                    <div 
+                      className="goal-bar-fill"
+                      style={{ width: `${Math.min(goal.progress, 100)}%` }}
+                    />
+                  </div>
+                  <div className="goal-details">
+                    {goal.current} / {goal.target}
+                  </div>
+                </div>
+              ))}
             </div>
           )}
         </div>
