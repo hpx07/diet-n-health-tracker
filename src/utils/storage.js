@@ -1,16 +1,53 @@
 import { supabase, isSupabaseConfigured } from '../config/supabase';
 import { getUserIdentifier } from './deviceId';
+import { deviceInfoService } from './deviceInfo';
 
 const SYNC_QUEUE_KEY = 'syncQueue';
 const LAST_SYNC_KEY = 'lastSync';
 
+// Cache device info to avoid repeated API calls
+let cachedDeviceInfo = null;
+let cachedIPInfo = null;
+
 export const storageService = {
+  // Get or fetch device and IP info
+  async getTrackingInfo() {
+    if (!cachedDeviceInfo) {
+      cachedDeviceInfo = deviceInfoService.getDeviceInfo();
+    }
+    
+    if (!cachedIPInfo) {
+      cachedIPInfo = await deviceInfoService.getIPAddress();
+    }
+    
+    return {
+      ipAddress: cachedIPInfo.ip,
+      deviceInfo: cachedDeviceInfo
+    };
+  },
+
   // Save data both locally and online
   async saveData(table, data) {
     try {
       const userId = getUserIdentifier();
       const timestamp = new Date().toISOString();
-      const dataWithMeta = { ...data, userId, timestamp, synced: false };
+      const trackingInfo = await this.getTrackingInfo();
+      
+      const dataWithMeta = { 
+        ...data, 
+        userId, 
+        timestamp, 
+        synced: false,
+        ipAddress: trackingInfo.ipAddress,
+        deviceInfo: trackingInfo.deviceInfo
+      };
+      
+      // Set createdIP and createdDevice only for new records
+      if (!data.id || !this.recordExists(table, data.id)) {
+        dataWithMeta.createdIP = trackingInfo.ipAddress;
+        dataWithMeta.createdDevice = trackingInfo.deviceInfo;
+        dataWithMeta.createdAt = timestamp;
+      }
 
       // Always save locally first
       this.saveToLocal(table, dataWithMeta);
@@ -34,6 +71,11 @@ export const storageService = {
       console.error('Error saving data:', error);
       throw error;
     }
+  },
+
+  recordExists(table, id) {
+    const existingData = this.getFromLocal(table);
+    return existingData.some(item => item.id === id);
   },
 
   saveToLocal(table, data) {

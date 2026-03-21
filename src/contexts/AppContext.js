@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { storageService } from '../utils/storage';
+import { getUserIdentifier } from '../utils/deviceId';
 import { v4 as uuidv4 } from 'uuid';
 
 const AppContext = createContext();
@@ -22,14 +23,75 @@ export const AppProvider = ({ children }) => {
 
   useEffect(() => {
     loadData();
+    
+    // Listen for storage changes (when user logs in/out or data syncs)
+    const handleStorageChange = () => {
+      console.log('📦 Storage changed, reloading data...');
+      loadData();
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    // Custom event for same-tab updates
+    window.addEventListener('localDataUpdated', handleStorageChange);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('localDataUpdated', handleStorageChange);
+    };
   }, []);
 
   const loadData = () => {
-    setUserProfile(storageService.getFromLocal('user_profile')[0] || null);
-    setDietEntries(storageService.getFromLocal('diet_entries'));
-    setTestReports(storageService.getFromLocal('test_reports'));
-    setHealthGoals(storageService.getFromLocal('health_goals'));
-    setDailyChecklists(storageService.getFromLocal('daily_checklists'));
+    console.log('📂 Loading data for current user...');
+    const currentUserId = getUserIdentifier();
+    console.log(`👤 Current user ID: ${currentUserId}`);
+    console.log(`   Length: ${currentUserId.length} chars`);
+    
+    // Get all data from localStorage
+    const allUserProfiles = storageService.getFromLocal('user_profile');
+    const allDietEntries = storageService.getFromLocal('diet_entries');
+    const allTestReports = storageService.getFromLocal('test_reports');
+    const allHealthGoals = storageService.getFromLocal('health_goals');
+    const allDailyChecklists = storageService.getFromLocal('daily_checklists');
+    
+    console.log('📦 Total records in localStorage:');
+    console.log(`  - User Profiles: ${allUserProfiles.length}`);
+    console.log(`  - Diet Entries: ${allDietEntries.length}`);
+    console.log(`  - Test Reports: ${allTestReports.length}`);
+    console.log(`  - Health Goals: ${allHealthGoals.length}`);
+    console.log(`  - Daily Checklists: ${allDailyChecklists.length}`);
+    
+    // Debug: Show unique userIds in diet_entries
+    if (allDietEntries.length > 0) {
+      const uniqueUserIds = [...new Set(allDietEntries.map(e => e.userId))];
+      console.log('🔍 Unique userIds in diet_entries:');
+      uniqueUserIds.forEach(uid => {
+        console.log(`   - "${uid}" (length: ${uid?.length || 0})`);
+        console.log(`     Match: ${uid === currentUserId ? '✅ YES' : '❌ NO'}`);
+        if (uid !== currentUserId) {
+          console.log(`     Difference: "${uid}" vs "${currentUserId}"`);
+        }
+      });
+    }
+    
+    // Filter by current user ID
+    const userProfileData = allUserProfiles.find(p => p.userId === currentUserId) || null;
+    const userDietEntries = allDietEntries.filter(e => e.userId === currentUserId);
+    const userTestReports = allTestReports.filter(r => r.userId === currentUserId);
+    const userHealthGoals = allHealthGoals.filter(g => g.userId === currentUserId);
+    const userDailyChecklists = allDailyChecklists.filter(c => c.userId === currentUserId);
+    
+    console.log('📊 Loaded data counts for current user:');
+    console.log(`  - User Profile: ${userProfileData ? '1' : '0'}`);
+    console.log(`  - Diet Entries: ${userDietEntries.length}`);
+    console.log(`  - Test Reports: ${userTestReports.length}`);
+    console.log(`  - Health Goals: ${userHealthGoals.length}`);
+    console.log(`  - Daily Checklists: ${userDailyChecklists.length}`);
+    
+    setUserProfile(userProfileData);
+    setDietEntries(userDietEntries);
+    setTestReports(userTestReports);
+    setHealthGoals(userHealthGoals);
+    setDailyChecklists(userDailyChecklists);
     setLoading(false);
   };
 

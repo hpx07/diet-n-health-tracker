@@ -155,14 +155,35 @@ const UserProfile = () => {
     }
   };
 
-  const handleGoogleSuccess = (credentialResponse) => {
+  const handleGoogleSuccess = async (credentialResponse) => {
     try {
       setLoginError(null);
       setLoginSuccess(false);
-      loginWithGoogle(credentialResponse.credential);
-      // Data migration happens automatically in AuthContext
-      setLoginSuccess(true);
-      setTimeout(() => setLoginSuccess(false), 5000); // Hide success message after 5 seconds
+      
+      const mergeResult = await loginWithGoogle(credentialResponse.credential);
+      
+      // Show detailed success message
+      if (mergeResult && mergeResult.success) {
+        const stats = mergeResult.results;
+        let message = '✓ Successfully linked your account!\n\n';
+        
+        if (stats) {
+          message += 'Data merged:\n';
+          Object.keys(stats).forEach(table => {
+            const s = stats[table];
+            if (s.localCount > 0 || s.cloudCount > 0) {
+              message += `• ${table}: ${s.localCount} local + ${s.cloudCount} cloud = ${s.mergedCount} total\n`;
+            }
+          });
+        }
+        
+        message += '\nAll your data is now synced across devices!';
+        setLoginSuccess(message);
+      } else {
+        setLoginSuccess('✓ Account linked! Your local data has been preserved.');
+      }
+      
+      setTimeout(() => setLoginSuccess(false), 8000);
     } catch (err) {
       console.error('Google login error:', err);
       setLoginError('Failed to link Google account. Please try again.');
@@ -374,7 +395,9 @@ const UserProfile = () => {
             
             {loginSuccess && (
               <div className="success-message">
-                ✓ Successfully linked your account! Your data has been associated with your Google account.
+                <pre style={{ whiteSpace: 'pre-wrap', margin: 0, fontFamily: 'inherit' }}>
+                  {loginSuccess}
+                </pre>
               </div>
             )}
             

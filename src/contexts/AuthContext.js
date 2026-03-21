@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { getDeviceId } from '../utils/deviceId';
+import { dataMergeService } from '../services/dataMergeService';
 
 const AuthContext = createContext();
 
@@ -41,31 +42,43 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  const migrateLocalDataToUser = (oldUserId, newUserId) => {
-    // Migrate data from device ID to email ID
-    const tables = ['user_profile', 'diet_entries', 'test_reports', 'health_goals', 'daily_checklists'];
-    
-    tables.forEach(table => {
-      try {
-        const data = localStorage.getItem(table);
-        if (data) {
-          const parsedData = JSON.parse(data);
-          // Update userId for all records
-          const updatedData = parsedData.map(item => ({
-            ...item,
-            userId: newUserId
-          }));
-          localStorage.setItem(table, JSON.stringify(updatedData));
-          console.log(`Migrated ${table} from ${oldUserId} to ${newUserId}`);
+  const migrateLocalDataToUser = async (oldUserId, newUserId) => {
+    // Use the new intelligent merge service
+    try {
+      console.log('\n' + '='.repeat(60));
+      console.log('🚀 STARTING INTELLIGENT DATA MERGE AND SYNC');
+      console.log('='.repeat(60));
+      
+      const result = await dataMergeService.mergeAndSyncData(oldUserId, newUserId);
+      
+      if (result.success) {
+        console.log('\n✅ Data merge completed successfully');
+        if (result.results) {
+          console.log('📊 Detailed merge statistics:');
+          Object.entries(result.results).forEach(([table, stats]) => {
+            console.log(`  - ${table}: ${stats.localCount} local + ${stats.cloudCount} cloud = ${stats.mergedCount} merged`);
+          });
         }
-      } catch (error) {
-        console.error(`Error migrating ${table}:`, error);
+        return result;
+      } else {
+        console.warn('\n⚠️ Data merge had issues but local migration completed:', result);
+        return result;
       }
-    });
+    } catch (error) {
+      console.error('\n❌ Error during data migration:', error);
+      console.error('Stack trace:', error.stack);
+      
+      // Fallback to simple local migration
+      console.log('⚠️ Falling back to simple local migration...');
+      dataMergeService.migrateLocalDataOnly(oldUserId, newUserId);
+      return { success: false, error: error.message, localMigrated: true };
+    }
   };
 
-  const loginWithGoogle = (credential) => {
+  const loginWithGoogle = async (credential) => {
     try {
+      console.log('🔐 Processing Google login...');
+      
       // Validate JWT token format
       if (!credential || typeof credential !== 'string') {
         throw new Error('Invalid credential format');
@@ -87,16 +100,35 @@ export const AuthProvider = ({ children }) => {
       const userName = payload.name;
       const deviceId = getDeviceId();
 
-      // Migrate existing local data to the new user email
+      console.log(`👤 User: ${userName} (${userEmail})`);
+      console.log(`📱 Device ID: ${deviceId}`);
+
+      // Migrate and merge existing local data with cloud data
       const oldUserId = deviceId;
-      migrateLocalDataToUser(oldUserId, userEmail);
+      console.log('🔄 Starting data merge and sync...');
+      const mergeResult = await migrateLocalDataToUser(oldUserId, userEmail);
+
+      if (mergeResult.success) {
+        console.log('✅ Login successful with data merge');
+        if (mergeResult.summary) {
+          console.log(`📊 Summary: ${mergeResult.summary.totalLocal} local + ${mergeResult.summary.totalCloud} cloud = ${mergeResult.summary.totalMerged} total records`);
+        }
+      } else {
+        console.warn('⚠️ Login successful but merge had issues:', mergeResult);
+      }
 
       localStorage.setItem('userEmail', userEmail);
       localStorage.setItem('userName', userName);
 
-      setUser({ email: userEmail, name: userName, deviceId });
+      setUser({ email: userEmail, name: userName, deviceId, mergeResult });
+      
+      // Trigger AppContext to reload data for the new user
+      console.log('🔄 Triggering data reload for new user...');
+      window.dispatchEvent(new Event('localDataUpdated'));
+      
+      return mergeResult;
     } catch (error) {
-      console.error('Error processing Google login:', error);
+      console.error('❌ Error processing Google login:', error);
       throw new Error('Failed to process login credentials');
     }
   };
@@ -106,6 +138,10 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('userName');
     const deviceId = getDeviceId();
     setUser({ deviceId, isGuest: true });
+    
+    // Trigger AppContext to reload data for guest user
+    console.log('🔄 Triggering data reload for guest user...');
+    window.dispatchEvent(new Event('localDataUpdated'));
   };
 
   const skipLogin = () => {
