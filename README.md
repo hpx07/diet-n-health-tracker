@@ -2,7 +2,7 @@
 
 A comprehensive mobile health and nutrition tracking application built with React and Capacitor.
 
-## 🚀 Features
+## Features
 
 - **Diet Tracking**: Log meals, track calories, protein, carbs, and fat
 - **Health Monitoring**: Record and track health test results
@@ -12,7 +12,7 @@ A comprehensive mobile health and nutrition tracking application built with Reac
 - **Offline Support**: Works offline with local storage
 - **Mobile Optimized**: Native mobile app experience
 
-## 📱 Installation
+## Installation
 
 ### Android APK
 Install the pre-built APK file:
@@ -37,7 +37,7 @@ npx cap sync
 cd android && ./gradlew assembleRelease
 ```
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - **Frontend**: React 19.2.3
 - **Mobile**: Capacitor 6.2.0
@@ -47,7 +47,7 @@ cd android && ./gradlew assembleRelease
 - **Notifications**: Capacitor Local Notifications
 - **Build**: Create React App
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 ├── src/
@@ -62,7 +62,7 @@ cd android && ./gradlew assembleRelease
 └── diet-n-health-tracker-v1.0.0.apk  # Ready-to-install APK
 ```
 
-## 📊 Usage
+## Usage
 
 1. **Setup Profile**: Complete your user profile for personalized recommendations
 2. **Track Diet**: Add meals and monitor your daily nutrition intake
@@ -70,14 +70,14 @@ cd android && ./gradlew assembleRelease
 4. **Set Goals**: Create health and fitness goals to track progress
 5. **View Reports**: Analyze your data with interactive charts
 
-## 🔒 Privacy & Data
+## Privacy & Data
 
 - **Local First**: All data stored locally on your device
 - **Optional Cloud Sync**: Enable Supabase for cross-device sync
 - **No Tracking**: No analytics or user tracking
 - **Offline Capable**: Works completely offline
 
-## 🚀 Building & Deployment
+## Building & Deployment
 
 ### Android APK
 ```bash
@@ -94,11 +94,11 @@ cd android && ./gradlew assembleRelease
 The APK will be generated at:
 `android/app/build/outputs/apk/release/app-release.apk`
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License.
 
-## 🤝 Contributing
+## Contributing
 
 1. Fork the repository
 2. Create a feature branch
@@ -106,7 +106,7 @@ This project is licensed under the MIT License.
 4. Test thoroughly
 5. Submit a pull request
 
-## 📞 Support
+## Support
 
 For issues or questions, please create an issue in the repository.
 
