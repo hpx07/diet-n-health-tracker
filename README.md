@@ -37,6 +37,14 @@ npx cap sync
 cd android && ./gradlew assembleRelease
 ```
 
+### Google Login Setup (Optional)
+To enable Google authentication:
+1. **Quick Setup**: See [QUICK_START_GOOGLE_LOGIN.md](QUICK_START_GOOGLE_LOGIN.md)
+2. **Detailed Guide**: See [GOOGLE_LOGIN_SETUP.md](GOOGLE_LOGIN_SETUP.md)
+3. **Verify Setup**: Run `node scripts/check-google-auth.js`
+
+Or simply click "Continue Without Login" to use the app with local storage only.
+
 ## Tech Stack
 
 - **Frontend**: React 19.2.3
