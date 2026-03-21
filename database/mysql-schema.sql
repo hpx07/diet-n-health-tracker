@@ -1,5 +1,5 @@
 -- MySQL Schema for Diet-n-Health Tracker
--- Compatible with PostgreSQL with minor adjustments
+-- Compatible with MySQL 5.7+ (JSON support required)
 
 -- User Profile Table
 CREATE TABLE IF NOT EXISTS user_profile (
@@ -27,13 +27,7 @@ CREATE TABLE IF NOT EXISTS diet_entries (
     foodName VARCHAR(255) NOT NULL,
     brand VARCHAR(255),
     quantity DECIMAL(8,2) NOT NULL,
-    nutrition_calories DECIMAL(8,2) NOT NULL,
-    nutrition_protein DECIMAL(8,2) NOT NULL,
-    nutrition_carbs DECIMAL(8,2) NOT NULL,
-    nutrition_fat DECIMAL(8,2) NOT NULL,
-    nutrition_fiber DECIMAL(8,2) DEFAULT 0,
-    nutrition_sugar DECIMAL(8,2) DEFAULT 0,
-    nutrition_sodium DECIMAL(8,2) DEFAULT 0,
+    nutrition JSON NOT NULL,
     timestamp DATETIME NOT NULL,
     synced BOOLEAN DEFAULT FALSE,
     INDEX idx_user_date (userId, date),
@@ -52,8 +46,7 @@ CREATE TABLE IF NOT EXISTS test_reports (
     date DATE NOT NULL,
     status ENUM('normal', 'low', 'high') NOT NULL,
     message TEXT NOT NULL,
-    normalRange_min DECIMAL(10,2),
-    normalRange_max DECIMAL(10,2),
+    normalRange JSON,
     timestamp DATETIME NOT NULL,
     synced BOOLEAN DEFAULT FALSE,
     INDEX idx_user_date (userId, date),
@@ -94,7 +87,7 @@ CREATE TABLE IF NOT EXISTS daily_checklists (
     INDEX idx_user_date (userId, date)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Sync Queue Table
+-- Sync Queue Table (for offline sync management)
 CREATE TABLE IF NOT EXISTS sync_queue (
     id INT AUTO_INCREMENT PRIMARY KEY,
     tableName VARCHAR(100) NOT NULL,
