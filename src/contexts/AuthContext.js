@@ -41,6 +41,29 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
+  const migrateLocalDataToUser = (oldUserId, newUserId) => {
+    // Migrate data from device ID to email ID
+    const tables = ['user_profile', 'diet_entries', 'test_reports', 'health_goals', 'daily_checklists'];
+    
+    tables.forEach(table => {
+      try {
+        const data = localStorage.getItem(table);
+        if (data) {
+          const parsedData = JSON.parse(data);
+          // Update userId for all records
+          const updatedData = parsedData.map(item => ({
+            ...item,
+            userId: newUserId
+          }));
+          localStorage.setItem(table, JSON.stringify(updatedData));
+          console.log(`Migrated ${table} from ${oldUserId} to ${newUserId}`);
+        }
+      } catch (error) {
+        console.error(`Error migrating ${table}:`, error);
+      }
+    });
+  };
+
   const loginWithGoogle = (credential) => {
     try {
       // Validate JWT token format
@@ -63,6 +86,10 @@ export const AuthProvider = ({ children }) => {
       const userEmail = payload.email;
       const userName = payload.name;
       const deviceId = getDeviceId();
+
+      // Migrate existing local data to the new user email
+      const oldUserId = deviceId;
+      migrateLocalDataToUser(oldUserId, userEmail);
 
       localStorage.setItem('userEmail', userEmail);
       localStorage.setItem('userName', userName);
