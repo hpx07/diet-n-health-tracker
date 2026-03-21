@@ -421,3 +421,111 @@
     grid-template-columns: repeat(3, 1fr);
   }
 }
+
+/* Guest Login Section */
+.guest-login-section {
+  margin-top: 16px;
+  padding: 16px;
+  background: linear-gradient(135deg, rgba(13, 148, 136, 0.05) 0%, rgba(13, 148, 136, 0.02) 100%);
+  border: 2px dashed var(--c-primary);
+  border-radius: var(--radius);
+}
+
+.guest-login-header {
+  margin-bottom: 14px;
+}
+
+.guest-login-header h4 {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--c-text);
+  margin: 0 0 6px 0;
+}
+
+.guest-login-header p {
+  font-size: 12px;
+  color: var(--c-text-2);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Success and Error Messages */
+.success-message {
+  padding: 10px 12px;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: var(--radius-sm);
+  color: #10b981;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.error-message {
+  padding: 10px 12px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: var(--radius-sm);
+  color: #ef4444;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Google Login Wrapper */
+.google-login-wrapper {
+  margin-bottom: 14px;
+  display: flex;
+  justify-content: center;
+}
+
+/* Guest Login Benefits */
+.guest-login-benefits {
+  margin-top: 14px;
+  padding: 12px;
+  background: var(--c-bg);
+  border-radius: var(--radius-sm);
+}
+
+.benefits-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--c-text-2);
+  text-transform: uppercase;
+  letter-spacing: .3px;
+  margin: 0 0 8px 0;
+}
+
+.guest-login-benefits ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.guest-login-benefits li {
+  font-size: 12px;
+  color: var(--c-text-2);
+  line-height: 1.5;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.guest-login-benefits li::before {
+  content: '';
+  display: inline-block;
+  width: 4px;
+  height: 4px;
+  background: var(--c-primary);
+  border-radius: 50%;
+  flex-shrink: 0;
+}

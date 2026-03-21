@@ -29,6 +29,19 @@ const Dashboard = () => {
     setShowMoreMenu(false);
   };
 
+  const getDisplayName = () => {
+    // Priority: 1. User Profile Name, 2. Gmail Name, 3. Gmail Email, 4. Guest User
+    if (userProfile?.name && userProfile.name.trim()) {
+      return userProfile.name;
+    } else if (user?.name) {
+      return user.name;
+    } else if (user?.email) {
+      return user.email;
+    } else {
+      return 'Guest User';
+    }
+  };
+
   // Check if a tab is in the "more" group
   const moreTabActive = ['goals', 'checklist', 'notifications', 'about'].includes(activeTab);
 
@@ -259,20 +272,13 @@ const Dashboard = () => {
 
           {/* User */}
           <div className="user-info">
-            {isAuthenticated ? (
-              <>
-                <div className="user-chip">
-                  <div className="user-avatar">👤</div>
-                  <span className="user-name">{user.name}</span>
-                </div>
-                <button onClick={handleLogout} className="logout-btn">Logout</button>
-              </>
-            ) : (
-              <div className="user-chip">
-                <div className="user-avatar">👤</div>
-                <span className="user-name">Guest</span>
-              </div>
-            )}
+            <div className="user-chip" onClick={() => handleTabChange('profile')} style={{ cursor: 'pointer' }}>
+              <div className="user-avatar">👤</div>
+              <span className="user-name">{getDisplayName()}</span>
+            </div>
+            {/* {isAuthenticated && (
+              <button onClick={handleLogout} className="logout-btn">Logout</button>
+            )} */}
           </div>
         </div>
       </header>
