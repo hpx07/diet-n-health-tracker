@@ -4,7 +4,7 @@ import { format } from 'date-fns';
 import './DailyChecklist.css';
 
 const DailyChecklist = () => {
-  const { dailyChecklists, addDailyChecklist, updateChecklist, deleteChecklist } = useApp();
+  const { dailyChecklists, addDailyChecklist, updateChecklist } = useApp();
   const [selectedDate, setSelectedDate] = useState(format(new Date(), 'yyyy-MM-dd'));
   const [showForm, setShowForm] = useState(false);
   const [newItem, setNewItem] = useState('');

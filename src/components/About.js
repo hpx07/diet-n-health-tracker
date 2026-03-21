@@ -72,10 +72,10 @@ const About = () => {
       <div className="about-section">
         <h3>📚 Documentation</h3>
         <div className="links-list">
-          <a href="#" className="doc-link">📖 User Guide</a>
-          <a href="#" className="doc-link">🔧 Setup Instructions</a>
-          <a href="#" className="doc-link">📱 Mobile App Guide</a>
-          <a href="#" className="doc-link">🔔 Notification Settings</a>
+          <button className="doc-link" onClick={() => alert('User Guide coming soon!')}>📖 User Guide</button>
+          <button className="doc-link" onClick={() => alert('Setup Instructions coming soon!')}>🔧 Setup Instructions</button>
+          <button className="doc-link" onClick={() => alert('Mobile App Guide coming soon!')}>📱 Mobile App Guide</button>
+          <button className="doc-link" onClick={() => alert('Notification Settings coming soon!')}>🔔 Notification Settings</button>
         </div>
       </div>
 

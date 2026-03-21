@@ -1,8 +1,6 @@
-import axios from 'axios';
-
 // USDA FoodData Central API (better quality data)
-const USDA_API_KEY = 'DEMO_KEY'; // Free demo key, you can get your own at https://fdc.nal.usda.gov/api-key-signup.html
-const USDA_API = 'https://api.nal.usda.gov/fdc/v1';
+// const USDA_API_KEY = 'DEMO_KEY'; // Free demo key, you can get your own at https://fdc.nal.usda.gov/api-key-signup.html
+// const USDA_API = 'https://api.nal.usda.gov/fdc/v1';
 
 // Built-in Indian Food Database (as primary source for Indian foods)
 const indianFoodDatabase = [

@@ -13,7 +13,7 @@ import { Capacitor } from '@capacitor/core';
 import './App.css';
 
 function PrivateRoute({ children }) {
-  const { user, loading } = useAuth();
+  const { loading } = useAuth();
 
   if (loading) {
     return (

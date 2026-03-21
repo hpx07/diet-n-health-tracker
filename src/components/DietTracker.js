@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useApp } from '../contexts/AppContext';
 import { foodApiService } from '../services/foodApi';
 import { dietCalculator } from '../services/dietCalculator';

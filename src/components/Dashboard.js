@@ -14,7 +14,7 @@ import './Dashboard.css';
 
 const Dashboard = () => {
   const { user, logout, isAuthenticated } = useAuth();
-  const { userProfile, dietEntries, testReports } = useApp();
+  const { userProfile, dietEntries } = useApp();
   const [activeTab, setActiveTab] = useState('overview');
   const [showMoreMenu, setShowMoreMenu] = useState(false);
 
