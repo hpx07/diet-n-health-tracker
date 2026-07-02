@@ -1,3 +1,17 @@
+/**
+ * Diet Calculator Service
+ * 
+ * Protein calculations based on scientific research:
+ * - Maintenance: 1.2-1.6 g/kg body weight (using 1.4 g/kg)
+ * - Fat Loss: 1.6-2.4 g/kg (using 2.0 g/kg for lean, 1.6 g/kg for overweight)
+ * - Muscle Gain: 1.6-2.2 g/kg (using 1.8 g/kg)
+ * 
+ * Sources: International Society of Sports Nutrition, Examine.com meta-analyses
+ * 
+ * Note: Protein is calculated based on body weight (g/kg), NOT as a percentage
+ * of calories, which is the scientifically accurate method.
+ */
+
 export const dietCalculator = {
   calculateBMI(weight, height) {
     // weight in kg, height in cm
@@ -33,36 +47,51 @@ export const dietCalculator = {
     return bmr * (multipliers[activityLevel] || 1.2);
   },
 
-  calculateMacros(tdee, goal) {
+  calculateMacros(tdee, goal, weight, bmi) {
     let calories = tdee;
-    let proteinPercent = 0.3;
-    let carbsPercent = 0.4;
-    let fatPercent = 0.3;
+    let proteinGramsPerKg = 1.6; // Default for muscle gain/fat loss
+    let fatPercent = 0.25; // 25% of calories from fat
 
     switch (goal) {
       case 'lose':
         calories = tdee - 500; // 500 calorie deficit
-        proteinPercent = 0.35;
-        carbsPercent = 0.35;
-        fatPercent = 0.3;
+        // Higher protein for fat loss to preserve muscle (1.6-2.4 g/kg)
+        // Use 2.0 g/kg for optimal muscle preservation during deficit
+        proteinGramsPerKg = bmi >= 25 ? 1.6 : 2.0; // Lower for overweight, higher for lean
+        fatPercent = 0.25;
         break;
       case 'gain':
         calories = tdee + 500; // 500 calorie surplus
-        proteinPercent = 0.3;
-        carbsPercent = 0.45;
+        // Optimal for muscle gain (1.6-2.2 g/kg)
+        proteinGramsPerKg = 1.8;
         fatPercent = 0.25;
         break;
       case 'maintain':
       default:
         calories = tdee;
+        // Maintenance (1.2-1.6 g/kg)
+        proteinGramsPerKg = 1.4;
+        fatPercent = 0.30;
         break;
     }
 
+    // Calculate protein based on body weight (scientifically accurate)
+    const proteinGrams = Math.round(weight * proteinGramsPerKg);
+    const proteinCalories = proteinGrams * 4;
+
+    // Calculate fat based on percentage of total calories
+    const fatGrams = Math.round((calories * fatPercent) / 9);
+    const fatCalories = fatGrams * 9;
+
+    // Remaining calories go to carbs
+    const carbCalories = calories - proteinCalories - fatCalories;
+    const carbGrams = Math.round(carbCalories / 4);
+
     return {
       calories: Math.round(calories),
-      protein: Math.round((calories * proteinPercent) / 4), // 4 cal per gram
-      carbs: Math.round((calories * carbsPercent) / 4),
-      fat: Math.round((calories * fatPercent) / 9) // 9 cal per gram
+      protein: proteinGrams,
+      carbs: Math.max(carbGrams, 0), // Ensure non-negative
+      fat: fatGrams
     };
   },
 
@@ -72,7 +101,7 @@ export const dietCalculator = {
     const bmi = this.calculateBMI(weight, height);
     const bmr = this.calculateBMR(weight, height, age, gender);
     const tdee = this.calculateTDEE(bmr, activityLevel);
-    const macros = this.calculateMacros(tdee, goal);
+    const macros = this.calculateMacros(tdee, goal, weight, bmi);
 
     return {
       bmi: bmi.toFixed(1),
