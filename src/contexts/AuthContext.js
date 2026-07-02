@@ -75,10 +75,22 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Google ID tokens are base64url-encoded and may contain UTF-8 names,
+  // so plain atob() alone can throw or garble the payload.
+  const decodeJwtPayload = (segment) => {
+    const base64 = segment.replace(/-/g, '+').replace(/_/g, '/');
+    const padded = base64.padEnd(base64.length + ((4 - (base64.length % 4)) % 4), '=');
+    const binary = atob(padded);
+    const json = decodeURIComponent(
+      Array.from(binary, (c) => '%' + c.charCodeAt(0).toString(16).padStart(2, '0')).join('')
+    );
+    return JSON.parse(json);
+  };
+
   const loginWithGoogle = async (credential) => {
     try {
       console.log('🔐 Processing Google login...');
-      
+
       // Validate JWT token format
       if (!credential || typeof credential !== 'string') {
         throw new Error('Invalid credential format');
@@ -90,7 +102,7 @@ export const AuthProvider = ({ children }) => {
       }
 
       // Decode JWT token to get user info with error handling
-      const payload = JSON.parse(atob(parts[1]));
+      const payload = decodeJwtPayload(parts[1]);
       
       if (!payload.email || !payload.name) {
         throw new Error('Missing required user information in token');

@@ -12,9 +12,9 @@ const Login = () => {
   const googleClientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
   const hasGoogleAuth = googleClientId && googleClientId !== 'your-google-client-id.apps.googleusercontent.com';
 
-  const handleGoogleSuccess = (credentialResponse) => {
+  const handleGoogleSuccess = async (credentialResponse) => {
     try {
-      loginWithGoogle(credentialResponse.credential);
+      await loginWithGoogle(credentialResponse.credential);
       navigate('/dashboard');
     } catch (err) {
       console.error('Google login error:', err);

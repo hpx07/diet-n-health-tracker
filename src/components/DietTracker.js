@@ -28,20 +28,21 @@ const DietTracker = () => {
   // Get categories from food API
   const categories = ['all', ...foodApiService.getCategories()];
 
-  const handleSearch = async () => {
-    if (!searchQuery.trim()) return;
-    
+  const handleSearch = async (queryOverride) => {
+    const query = typeof queryOverride === 'string' ? queryOverride : searchQuery;
+    if (!query.trim()) return;
+
     try {
       setSearching(true);
       setShowSuggestions(false);
-      
+
       let results;
       if (selectedCategory === 'all') {
-        results = await foodApiService.searchFood(searchQuery);
+        results = await foodApiService.searchFood(query);
       } else {
         // Filter by category
         const categoryResults = foodApiService.getIndianFoodsByCategory(selectedCategory);
-        const lowerQuery = searchQuery.toLowerCase();
+        const lowerQuery = query.toLowerCase();
         results = categoryResults
           .filter(food => food.name.toLowerCase().includes(lowerQuery))
           .map(food => ({
@@ -97,11 +98,7 @@ const DietTracker = () => {
   const handleSuggestionClick = (suggestion) => {
     setSearchQuery(suggestion);
     setShowSuggestions(false);
-    // Automatically search when suggestion is clicked
-    setTimeout(() => {
-      const searchBtn = document.querySelector('.search-btn');
-      if (searchBtn) searchBtn.click();
-    }, 100);
+    handleSearch(suggestion);
   };
 
   const handleCategoryChange = (category) => {
@@ -138,7 +135,8 @@ const DietTracker = () => {
       return;
     }
 
-    if (!quantity || quantity <= 0) {
+    // Empty field falls back to the 100g default; only reject explicit <= 0
+    if (quantity !== '' && Number(quantity) <= 0) {
       console.warn('Invalid quantity for food entry');
       return;
     }

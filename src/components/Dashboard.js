@@ -10,6 +10,7 @@ import Reports from './Reports';
 import NotificationSettings from './NotificationSettings';
 import About from './About';
 import { APP_VERSION } from '../version';
+import { dietCalculator } from '../services/dietCalculator';
 import './Dashboard.css';
 
 const Dashboard = () => {
@@ -50,36 +51,33 @@ const Dashboard = () => {
     const today = new Date().toISOString().split('T')[0];
     const todayEntries = dietEntries?.filter(e => e.date === today) || [];
     
-    // Calculate calories and protein from nutrition data
-    const todayCalories = todayEntries.reduce((sum, e) => {
-      if (e.nutrition && e.quantity) {
-        return sum + Math.round(e.nutrition.calories * e.quantity / 100);
+    // Sum raw values first, round once at the end (per-entry rounding drifts)
+    const totals = todayEntries.reduce((acc, e) => {
+      if (e.nutrition) {
+        const multiplier = (Number(e.quantity) || 100) / 100;
+        acc.calories += (e.nutrition.calories || 0) * multiplier;
+        acc.protein += (e.nutrition.protein || 0) * multiplier;
+        acc.carbs += (e.nutrition.carbs || 0) * multiplier;
+        acc.fat += (e.nutrition.fat || 0) * multiplier;
+      } else {
+        acc.calories += e.calories || 0;
+        acc.protein += e.protein || 0;
       }
-      return sum + (e.calories || 0);
-    }, 0);
-    
-    const todayProtein = todayEntries.reduce((sum, e) => {
-      if (e.nutrition && e.quantity) {
-        return sum + Math.round(e.nutrition.protein * e.quantity / 100);
-      }
-      return sum + (e.protein || 0);
-    }, 0);
+      return acc;
+    }, { calories: 0, protein: 0, carbs: 0, fat: 0 });
 
-    const todayCarbs = todayEntries.reduce((sum, e) => {
-      if (e.nutrition && e.quantity) {
-        return sum + Math.round(e.nutrition.carbs * e.quantity / 100);
-      }
-      return sum;
-    }, 0);
+    const todayCalories = Math.round(totals.calories);
+    const todayProtein = Math.round(totals.protein);
+    const todayCarbs = Math.round(totals.carbs);
+    const todayFat = Math.round(totals.fat);
 
-    const todayFat = todayEntries.reduce((sum, e) => {
-      if (e.nutrition && e.quantity) {
-        return sum + Math.round(e.nutrition.fat * e.quantity / 100);
-      }
-      return sum;
-    }, 0);
-    
-    const targetCalories = userProfile?.targetCalories || 2000;
+    // Use the same target the Diet Tracker computes from the profile,
+    // instead of a hardcoded 2000 kcal
+    const hasFullProfile = userProfile?.weight && userProfile?.height && userProfile?.age;
+    const dietPlan = hasFullProfile
+      ? dietCalculator.generateDietPlan(userProfile, userProfile.goal)
+      : null;
+    const targetCalories = dietPlan?.targetCalories || userProfile?.targetCalories || 2000;
     const caloriePercent = targetCalories > 0 ? Math.min(Math.round((todayCalories / targetCalories) * 100), 100) : 0;
 
     // Group today's entries by meal type
@@ -99,7 +97,7 @@ const Dashboard = () => {
         <div className="greeting-section">
           <div className="greeting-avatar">🫀</div>
           <div className="greeting-text">
-            <h2>Hi, {user?.name || 'Guest'}!</h2>
+            <h2>Hi, {getDisplayName()}!</h2>
             <p>Welcome back — stay on track!</p>
           </div>
         </div>
@@ -242,7 +240,7 @@ const Dashboard = () => {
       case 'checklist':
         return <DailyChecklist />;
       case 'reports':
-        return <Reports />;
+        return <Reports onNavigate={handleTabChange} />;
       case 'notifications':
         return <NotificationSettings />;
       case 'profile':

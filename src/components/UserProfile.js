@@ -23,6 +23,8 @@ const UserProfile = () => {
   const [lastSyncTime, setLastSyncTime] = useState(null);
   const [loginError, setLoginError] = useState(null);
   const [loginSuccess, setLoginSuccess] = useState(false);
+  const [formErrors, setFormErrors] = useState([]);
+  const [saveSuccess, setSaveSuccess] = useState(false);
 
   useEffect(() => {
     if (userProfile) {
@@ -48,38 +50,49 @@ const UserProfile = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
     // Validate form data
     const errors = [];
-    
+
     if (!formData.name.trim()) {
       errors.push('Name is required');
     }
-    
+
     if (!formData.age || formData.age < 1 || formData.age > 120) {
       errors.push('Age must be between 1 and 120 years');
     }
-    
+
     if (!formData.height || formData.height < 50 || formData.height > 300) {
       errors.push('Height must be between 50 and 300 cm');
     }
-    
+
     if (!formData.weight || formData.weight < 20 || formData.weight > 300) {
       errors.push('Weight must be between 20 and 300 kg');
     }
-    
-    if (errors.length > 0) {
-      console.error('Validation errors:', errors);
-      // You could show these errors to the user
-      return;
-    }
-    
+
+    setFormErrors(errors);
+    if (errors.length > 0) return;
+
     try {
-      saveUserProfile(formData);
-      generateDietPlan(formData);
-      console.log('Profile saved successfully');
+      // Store numbers as numbers, and persist the computed calorie target
+      // so the rest of the app can use it
+      const profile = {
+        ...formData,
+        name: formData.name.trim(),
+        age: Number(formData.age),
+        height: Number(formData.height),
+        weight: Number(formData.weight)
+      };
+      const plan = dietCalculator.generateDietPlan(profile, profile.goal);
+      profile.targetCalories = plan.targetCalories;
+
+      saveUserProfile(profile);
+      setDietPlan(plan);
+      setSaveSuccess(true);
+      setTimeout(() => setSaveSuccess(false), 4000);
     } catch (error) {
       console.error('Error saving profile:', error);
+      setFormErrors(['Could not save profile. Please try again.']);
     }
   };
 
@@ -312,6 +325,18 @@ const UserProfile = () => {
             </select>
           </div>
         </div>
+
+        {formErrors.length > 0 && (
+          <div className="error-message" role="alert">
+            {formErrors.map((err, i) => (
+              <div key={i}>⚠️ {err}</div>
+            ))}
+          </div>
+        )}
+
+        {saveSuccess && (
+          <div className="success-message">✓ Profile saved — diet plan updated below.</div>
+        )}
 
         <button type="submit" className="save-btn">Save Profile</button>
       </form>

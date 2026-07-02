@@ -39,7 +39,10 @@ const HealthGoals = () => {
 
   const handleUpdateProgress = async (goalId, newValue) => {
     const goal = healthGoals.find(g => g.id === goalId);
-    const progress = ((newValue / goal.targetValue) * 100).toFixed(1);
+    if (!goal || !newValue || isNaN(parseFloat(newValue))) return;
+    const progress = goal.targetValue > 0
+      ? ((newValue / goal.targetValue) * 100).toFixed(1)
+      : '0';
     const completed = newValue >= goal.targetValue;
     
     await updateHealthGoal(goalId, {
@@ -50,12 +53,13 @@ const HealthGoals = () => {
     });
   };
 
+  // Matches the app palette (accent / warn / danger tokens in App.css)
   const getProgressColor = (progress) => {
-    if (progress >= 100) return '#4caf50';
-    if (progress >= 75) return '#8bc34a';
-    if (progress >= 50) return '#ffc107';
-    if (progress >= 25) return '#ff9800';
-    return '#f44336';
+    if (progress >= 100) return '#10B981';
+    if (progress >= 75) return '#34D399';
+    if (progress >= 50) return '#F59E0B';
+    if (progress >= 25) return '#FB923C';
+    return '#F43F5E';
   };
 
   const getCategoryIcon = (category) => {
@@ -172,7 +176,9 @@ const HealthGoals = () => {
         ) : (
           <div className="goals-grid">
             {healthGoals.map((goal) => {
-              const progress = ((goal.currentValue / goal.targetValue) * 100).toFixed(1);
+              const progress = goal.targetValue > 0
+                ? ((goal.currentValue / goal.targetValue) * 100).toFixed(1)
+                : '0';
               const isCompleted = goal.completed || progress >= 100;
 
               return (

@@ -96,8 +96,12 @@ export const dietCalculator = {
   },
 
   generateDietPlan(userProfile, goal) {
-    const { weight, height, age, gender, activityLevel } = userProfile;
-    
+    // Profile values come from form inputs and may be strings
+    const weight = Number(userProfile.weight);
+    const height = Number(userProfile.height);
+    const age = Number(userProfile.age);
+    const { gender, activityLevel } = userProfile;
+
     const bmi = this.calculateBMI(weight, height);
     const bmr = this.calculateBMR(weight, height, age, gender);
     const tdee = this.calculateTDEE(bmr, activityLevel);
@@ -147,12 +151,17 @@ export const dietCalculator = {
 
   analyzeDailyIntake(entries, targetMacros) {
     const totals = entries.reduce((acc, entry) => {
-      acc.calories += entry.nutrition.calories * (entry.quantity / 100);
-      acc.protein += entry.nutrition.protein * (entry.quantity / 100);
-      acc.carbs += entry.nutrition.carbs * (entry.quantity / 100);
-      acc.fat += entry.nutrition.fat * (entry.quantity / 100);
+      if (!entry.nutrition) return acc;
+      const multiplier = (Number(entry.quantity) || 100) / 100;
+      acc.calories += (entry.nutrition.calories || 0) * multiplier;
+      acc.protein += (entry.nutrition.protein || 0) * multiplier;
+      acc.carbs += (entry.nutrition.carbs || 0) * multiplier;
+      acc.fat += (entry.nutrition.fat || 0) * multiplier;
       return acc;
     }, { calories: 0, protein: 0, carbs: 0, fat: 0 });
+
+    const percentOf = (value, target) =>
+      target > 0 ? Math.round((value / target) * 100) : 0;
 
     return {
       totals: {
@@ -162,10 +171,10 @@ export const dietCalculator = {
         fat: Math.round(totals.fat)
       },
       percentages: {
-        calories: Math.round((totals.calories / targetMacros.calories) * 100),
-        protein: Math.round((totals.protein / targetMacros.protein) * 100),
-        carbs: Math.round((totals.carbs / targetMacros.carbs) * 100),
-        fat: Math.round((totals.fat / targetMacros.fat) * 100)
+        calories: percentOf(totals.calories, targetMacros.calories),
+        protein: percentOf(totals.protein, targetMacros.protein),
+        carbs: percentOf(totals.carbs, targetMacros.carbs),
+        fat: percentOf(totals.fat, targetMacros.fat)
       },
       remaining: {
         calories: targetMacros.calories - Math.round(totals.calories),

@@ -61,12 +61,13 @@ const TestReports = () => {
     setShowForm(false);
   };
 
+  // Matches the app palette (accent / warn / danger tokens in App.css)
   const getStatusColor = (status) => {
     switch (status) {
-      case 'normal': return '#4caf50';
-      case 'low': return '#ff9800';
-      case 'high': return '#f44336';
-      default: return '#999';
+      case 'normal': return '#10B981';
+      case 'low': return '#F59E0B';
+      case 'high': return '#F43F5E';
+      default: return '#94A3B8';
     }
   };
 

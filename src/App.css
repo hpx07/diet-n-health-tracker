@@ -18,6 +18,9 @@
   --c-danger-l:   #FFE4E6;   /* rose-100  */
   --c-warn:       #F59E0B;   /* amber-400 */
   --c-warn-l:     #FEF3C7;
+  --c-protein:    #8B5CF6;   /* violet-500 — protein everywhere */
+  --c-carbs:      #3B82F6;   /* blue-500   — carbs everywhere   */
+  --c-fat:        #F59E0B;   /* amber-500  — fat everywhere     */
   --c-surface:    #FFFFFF;
   --c-bg:         #F0FDF4;   /* near-white green tint       */
   --c-border:     #E2E8F0;
@@ -204,14 +207,21 @@ input:focus, select:focus, textarea:focus {
   transition: width .4s ease;
 }
 .progress-fill.accent  { background: var(--c-accent); }
-.progress-fill.protein { background: #8B5CF6; }
-.progress-fill.carbs   { background: #3B82F6; }
-.progress-fill.fat     { background: #F59E0B; }
+.progress-fill.protein { background: var(--c-protein); }
+.progress-fill.carbs   { background: var(--c-carbs); }
+.progress-fill.fat     { background: var(--c-fat); }
 /* ---------- Mobile Improvements ---------- */
 
 /* Ensure all containers respect viewport bounds */
 * {
   max-width: 100%;
+}
+
+/* Recharts sizes charts via a 0-width measuring wrapper; the global
+   max-width rule above would clamp them to 0. Exempt chart internals. */
+.recharts-wrapper,
+.recharts-wrapper * {
+  max-width: none;
 }
 
 /* Improve touch scrolling on iOS */
