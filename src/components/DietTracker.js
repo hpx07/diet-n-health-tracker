@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useApp } from '../contexts/AppContext';
 import { foodApiService } from '../services/foodApi';
 import { dietCalculator } from '../services/dietCalculator';
@@ -128,6 +128,33 @@ const DietTracker = () => {
       setSearchResults(results);
     }
   };
+
+  // Open the add-entry modal fresh for the clicked food
+  const openFoodModal = (food) => {
+    setSelectedFood(food);
+    setMealType('breakfast');
+    setQuantity(100);
+    setShowSuggestions(false);
+  };
+
+  const closeFoodModal = () => {
+    setSelectedFood(null);
+    setQuantity(100);
+  };
+
+  // Close the modal with Escape and lock background scroll while it is open
+  useEffect(() => {
+    if (!selectedFood) return;
+    const onKeyDown = (e) => {
+      if (e.key === 'Escape') closeFoodModal();
+    };
+    document.addEventListener('keydown', onKeyDown);
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('keydown', onKeyDown);
+      document.body.style.overflow = '';
+    };
+  }, [selectedFood]);
 
   const handleAddEntry = async () => {
     if (!selectedFood) {
@@ -311,47 +338,20 @@ const DietTracker = () => {
             {searchResults.map((food) => (
               <div
                 key={food.id}
-                className={`food-item ${selectedFood?.id === food.id ? 'selected' : ''}`}
-                onClick={() => setSelectedFood(food)}
+                className="food-item"
+                onClick={() => openFoodModal(food)}
               >
                 <div className="food-name">{food.name}</div>
                 {food.brand && <div className="food-brand">{food.brand}</div>}
                 <div className="food-nutrition">
                   {food.nutrition.calories} cal | P: {food.nutrition.protein}g | C: {food.nutrition.carbs}g | F: {food.nutrition.fat}g
                 </div>
+                <span className="food-add-hint">+ Add</span>
               </div>
             ))}
           </div>
         )}
 
-        {selectedFood && (
-          <div className="add-entry-form">
-            <div className="form-row">
-              <div className="form-group">
-                <label>Meal Type</label>
-                <select value={mealType} onChange={(e) => setMealType(e.target.value)}>
-                  <option value="breakfast">Breakfast</option>
-                  <option value="lunch">Lunch</option>
-                  <option value="dinner">Dinner</option>
-                  <option value="snack">Snack</option>
-                </select>
-              </div>
-
-              <div className="form-group">
-                <label>Quantity (g)</label>
-                <input
-                  type="number"
-                  value={quantity}
-                  onChange={(e) => setQuantity(e.target.value === '' ? '' : Number(e.target.value))}
-                  min="1"
-                  placeholder="100"
-                />
-              </div>
-            </div>
-
-            <button onClick={handleAddEntry} className="add-btn">Add to Diary</button>
-          </div>
-        )}
       </div>
 
       <div className="entries-section">
@@ -394,6 +394,89 @@ const DietTracker = () => {
           </div>
         )}
       </div>
+
+      {/* Add-entry modal — opens immediately when a food item is tapped */}
+      {selectedFood && (
+        <div className="food-modal-overlay" onClick={closeFoodModal}>
+          <div
+            className="food-modal"
+            onClick={(e) => e.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+          >
+            <div className="food-modal-header">
+              <div className="food-modal-title">
+                <h3>{selectedFood.name}</h3>
+                {selectedFood.brand && (
+                  <span className="food-modal-brand">{selectedFood.brand}</span>
+                )}
+              </div>
+              <button
+                className="food-modal-close"
+                onClick={closeFoodModal}
+                aria-label="Close"
+              >
+                ×
+              </button>
+            </div>
+
+            <div className="form-row">
+              <div className="form-group">
+                <label>Meal Type</label>
+                <select value={mealType} onChange={(e) => setMealType(e.target.value)}>
+                  <option value="breakfast">Breakfast</option>
+                  <option value="lunch">Lunch</option>
+                  <option value="dinner">Dinner</option>
+                  <option value="snack">Snack</option>
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label>Quantity (g)</label>
+                <input
+                  type="number"
+                  value={quantity}
+                  onChange={(e) => setQuantity(e.target.value === '' ? '' : Number(e.target.value))}
+                  min="1"
+                  placeholder="100"
+                  autoFocus
+                />
+              </div>
+            </div>
+
+            {(() => {
+              const qty = quantity === '' ? 0 : Number(quantity);
+              const factor = qty / 100;
+              const n = selectedFood.nutrition;
+              return (
+                <div className="food-modal-nutrition">
+                  <div className="fm-nut-item">
+                    <span className="fm-nut-value">{Math.round((n.calories || 0) * factor)}</span>
+                    <span className="fm-nut-label">cal</span>
+                  </div>
+                  <div className="fm-nut-item">
+                    <span className="fm-nut-value">{Math.round((n.protein || 0) * factor)}g</span>
+                    <span className="fm-nut-label">Protein</span>
+                  </div>
+                  <div className="fm-nut-item">
+                    <span className="fm-nut-value">{Math.round((n.carbs || 0) * factor)}g</span>
+                    <span className="fm-nut-label">Carbs</span>
+                  </div>
+                  <div className="fm-nut-item">
+                    <span className="fm-nut-value">{Math.round((n.fat || 0) * factor)}g</span>
+                    <span className="fm-nut-label">Fat</span>
+                  </div>
+                </div>
+              );
+            })()}
+
+            <div className="food-modal-actions">
+              <button onClick={closeFoodModal} className="fm-cancel-btn">Cancel</button>
+              <button onClick={handleAddEntry} className="add-btn">Add to Diary</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
